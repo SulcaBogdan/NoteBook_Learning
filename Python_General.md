@@ -169,15 +169,15 @@ AST este tradus in bytecode, care este un set de instructiuni intermediare speci
 
 _Bytecode python:_
 
-  1    LOAD_CONST          0 (5)
+  **1    LOAD_CONST          0 (5)**
 
        STORE_NAME          0 (numar1)
 
-  2    LOAD_CONST          1 (7)
+  **2    LOAD_CONST          1 (7)**
 
        STORE_NAME          1 (numar2)
 
-  3    LOAD_NAME           0 (numar1)
+ **3    LOAD_NAME           0 (numar1)**
 
        LOAD_NAME           1 (numar2)
 
@@ -186,7 +186,7 @@ _Bytecode python:_
        STORE_NAME          2 (suma)
 
 
-  4    LOAD_NAME           3 (print)
+  **4    LOAD_NAME           3 (print)**
 
        LOAD_CONST          2 ('Suma numerelor {numar1} și {numar2} este: {suma}')
 
