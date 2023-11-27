@@ -92,5 +92,127 @@ lista_dublata = double_val(lista_initiala)
 #Printarea rezultatelor
 print(f"Lista initiala: {lista_initiala}")
 print(f"Lista dublata: {lista_dublata}")
-
 ```
+
+## Python este un limbaj de programare **intrerpretat**
+
+**Python** este un limbaj de programare interpetat, ceea ce inseamna ca nu necesita o etapa separata de compilare inainte de a executa codul. In schimb, interpretorul Python citeste si executa direct codul sursa line by line.
+
+_Procesul complet este:_
+
+**1. Scrierea codului sursa(de catre programator):**
+
+Etapa unde noi(programatorii) scriem  instructiunile si logicile programului(linii de cod).
+
+```python
+#Initializarea a doua varibile num1 si num2
+num1 = 6
+num2 = 7
+#Initializarea variabilei suma cu adunarea variabilelor num1 si num2
+suma = num1 + num2
+
+#Printarea rezultatului intr-un fstring
+print(f"Suma numerelor {num1} si {num2} este : {suma}")
+```
+   
+**2. Analiza lexicala si sintatica(de catre interpetorul Python):**
+
+Interpretorul Python parcurge codul sursa si il descompune in "token-uri", unitati semantice, si apoi construieste un "arbore sintatic abstract"(AST) care reprezinta structura logica a codului sursa.
+
+<div style="text-align:center;">
+<a href="https://postimg.cc/tsP1cXL8" target="_blank">
+  <img src="https://i.postimg.cc/x1pKc8gj/AST.png" alt="Procedural Programming" width="350" height="250">
+</a>
+</div>
+
+**Analiza Lexicală și Sintactică Simplificată**
+
+#### "Token"-uri
+
+- `numar1`
+- `=`
+- `5`
+- `numar2`
+- `=`
+- `7`
+- `suma`
+- `=`
+- `numar1` + `numar2`
+- `print`
+- `(` 
+- `f"Suma numerelor {numar1} și {numar2} este: {suma}"`
+- `)`
+
+#### Arbore Sintactic Abstract Simplificat
+
+- `atribuire`
+  - `identificator: numar1`
+  - `valoare: 5`
+
+- `atribuire`
+  - `identificator: numar2`
+  - `valoare: 7`
+
+- `atribuire`
+  - `identificator: suma`
+  - `adunare`
+    - `identificator: numar1`
+    - `identificator: numar2`
+
+- `afisare`
+  - `format_string: "Suma numerelor {numar1} și {numar2} este: {suma}"`
+
+
+**3. Generarea bytecode-ului:**
+
+AST este tradus in bytecode, care este un set de instructiuni intermediare specifice Python.
+
+_Bytecode python:_
+
+  1    LOAD_CONST          0 (5)
+
+       STORE_NAME          0 (numar1)
+
+  2    LOAD_CONST          1 (7)
+
+       STORE_NAME          1 (numar2)
+
+  3    LOAD_NAME           0 (numar1)
+
+       LOAD_NAME           1 (numar2)
+
+       BINARY_ADD
+
+       STORE_NAME          2 (suma)
+
+
+  4    LOAD_NAME           3 (print)
+
+       LOAD_CONST          2 ('Suma numerelor {numar1} și {numar2} este: {suma}')
+
+       LOAD_NAME           0 (numar1)
+
+       LOAD_NAME           1 (numar2)
+
+       LOAD_NAME           2 (suma)
+
+       BUILD_STRING        4
+
+       CALL_FUNCTION       1
+
+       POP_TOP
+
+       LOAD_CONST          3 (None)
+
+       RETURN_VALUE
+
+
+
+
+**4. Executia bytecode-ului:**
+
+Bytecode-ul este executat de catre "Python Virtual Machine"(Python VM). In timplu executiei bytecode-ului, Python VM utilizeaza o structura de date numita stack(stiva) pentru a gestiona temporar valorile, rezultatele operatiilor si adresele de revenire. Vom discuta mai in detaliu despre stack in alt fisier.
+
+**5. Rularea programului:**
+
+La finalul executiei programului, VM poate furniza rezultatele asteptate(cum ar fi afisarea pe consola, returnarea unei valori, etc.).
