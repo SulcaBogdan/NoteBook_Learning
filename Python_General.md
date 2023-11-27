@@ -6,7 +6,7 @@
     
 Aceasta este un stil de progamare in care programul este structurat intr-o secventa de instructiuni care sunt executate una dupa alta.
 
-![Programare procedulara](C:\Users\Dodan\Desktop\Procedular_prog.png)
+![Programare procedulara](https://postimg.cc/KK50xYrK)
 
 _Exemplu de cod:_
 
