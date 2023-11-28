@@ -34,7 +34,11 @@ Numaratoare la arrays in programare incepe de la indexul 0. Deci lungimea unui a
 
 Putem returna un interval de caractere utilizind sintaxa slice:
 
-[start:end]    
+| Sintaxă slice  |
+|--------------------------|
+| `[start:end]`             |
+
+   
 
 Parantezele patrate pot fi folosite pentru a accesa elementele array ului. 
 
