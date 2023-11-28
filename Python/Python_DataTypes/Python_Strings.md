@@ -22,17 +22,19 @@ M
 ```
 Deci cand spunem ca un String este un array defapt ne referim la :
 
-            Masina = ["M", "a", "s", "i", "n", "a"] 
-                    
-                    | M | a | s | i | n | a |
-                    | 0 | 1 | 2 | 3 | 4 | 5 |
+Masina = ["M", "a", "s", "i", "n", "a"] 
+|   |   |   |   |   |   |   |
+|---|---|---|---|---|---|---|
+| M | a | s | i | n | a |
+| 0 | 1 | 2 | 3 | 4 | 5 |
+
 Numaratoare la arrays in programare incepe de la indexul 0. Deci lungimea unui array != cu numarul indexurilor.
 
 ## String slicing
 
 Putem returna un interval de caractere utilizind sintaxa slice:
 
-                            [start:end]    
+[start:end]    
 
 Parantezele patrate pot fi folosite pentru a accesa elementele array ului. 
 
@@ -77,9 +79,11 @@ programator
 
 Ultimul element dintr-un array poate fi notat si cu -1 iar de acolo sa se inceapa numaratoarea inversa, adica -2, -3 pana la sfarsit(inceput).
 
-                   
-                    | M  | a  | s  | i  | n  | a  |
-                    | -6 | -5 | -4 | -3 | -2 | -1 |
+|    |    |    |    |    |    |
+|----|----|----|----|----|----|
+| M  | a  | s  | i  | n  | a  |
+| -6 | -5 | -4 | -3 | -2 | -1 |
+
 
 Exemplu de cod:
 
