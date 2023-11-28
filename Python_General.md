@@ -94,13 +94,13 @@ print(f"Lista initiala: {lista_initiala}")
 print(f"Lista dublata: {lista_dublata}")
 ```
 
-## Python este un limbaj de programare **intrerpretat**
+##  📘Python este un limbaj de programare **intrerpretat**
 
 **Python** este un limbaj de programare interpetat, ceea ce inseamna ca nu necesita o etapa separata de compilare inainte de a executa codul. In schimb, interpretorul Python citeste si executa direct codul sursa line by line.
 
 _Procesul complet este:_
 
-**1. Scrierea codului sursa(de catre programator):**
+**💻1. Scrierea codului sursa(de catre programator):**
 
 Etapa unde noi(programatorii) scriem  instructiunile si logicile programului(linii de cod).
 
@@ -115,7 +115,7 @@ suma = num1 + num2
 print(f"Suma numerelor {num1} si {num2} este : {suma}")
 ```
    
-**2. Analiza lexicala si sintatica(de catre interpetorul Python):**
+**💻2. Analiza lexicala si sintatica(de catre interpetorul Python):**
 
 Interpretorul Python parcurge codul sursa si il descompune in "token-uri", unitati semantice, si apoi construieste un "arbore sintatic abstract"(AST) care reprezinta structura logica a codului sursa.
 
@@ -163,7 +163,7 @@ Interpretorul Python parcurge codul sursa si il descompune in "token-uri", unita
   - `format_string: "Suma numerelor {numar1} și {numar2} este: {suma}"`
 
 
-**3. Generarea bytecode-ului:**
+**💻3. Generarea bytecode-ului:**
 
 AST este tradus in bytecode, care este un set de instructiuni intermediare specifice Python.
 
@@ -209,15 +209,15 @@ _Bytecode python:_
 
 
 
-**4. Executia bytecode-ului:**
+**💻4. Executia bytecode-ului:**
 
 Bytecode-ul este executat de catre "Python Virtual Machine"(Python VM). In timplu executiei bytecode-ului, Python VM utilizeaza o structura de date numita stack(stiva) pentru a gestiona temporar valorile, rezultatele operatiilor si adresele de revenire. Vom discuta mai in detaliu despre stack in alt fisier.
 
-**5. Rularea programului:**
+**💻5. Rularea programului:**
 
 La finalul executiei programului, VM poate furniza rezultatele asteptate(cum ar fi afisarea pe consola, returnarea unei valori, etc.).
 
-## La ce poate fi utilizat Python?
+## ❔ La ce poate fi utilizat Python?
 
 1. Python poate fi utilizat pe un server pentru a crea aplicații web.
    
@@ -226,7 +226,7 @@ La finalul executiei programului, VM poate furniza rezultatele asteptate(cum ar 
 4. Python poate fi folosit pentru manipularea **big data** și realizarea de calcule matematice complexe.
 5. Python poate fi utilizat pentru prototipare rapidă sau pentru dezvoltarea de software gata pentru producție.
 
-## De ce Python?
+##   ❔De ce Python?
 
 1. Python functioneaza pe diferite platforme (Windows, Mac, Linux, Raspberry Pi, etc.)
    
@@ -234,7 +234,7 @@ La finalul executiei programului, VM poate furniza rezultatele asteptate(cum ar 
 3. Python ruleaza pe un sistem de interpretare, ceea ce inseamna ca codul poate fi executat imediat ce este scris. Acest lucru inseamna ca prototipizasrea poate fi foarte rapida.
 4. Python poate fi tratat intr-un mod procedular, un mod OOP sau un mod functional.
 
-## Sintaxa python comparata cu alt limbaj de programare
+##  💥 Sintaxa python comparata cu alt limbaj de programare
 
 _Hello World:_
 
