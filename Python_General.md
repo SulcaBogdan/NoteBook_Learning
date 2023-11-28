@@ -216,3 +216,42 @@ Bytecode-ul este executat de catre "Python Virtual Machine"(Python VM). In timpl
 **5. Rularea programului:**
 
 La finalul executiei programului, VM poate furniza rezultatele asteptate(cum ar fi afisarea pe consola, returnarea unei valori, etc.).
+
+## La ce poate fi utilizat Python?
+
+1. Python poate fi utilizat pe un server pentru a crea aplicații web.
+   
+2. Python poate fi folosit alături de software pentru a crea fluxuri de lucru.
+3. Python poate să se conecteze la sisteme de baze de date. De asemenea, poate citi și modifica fișiere.
+4. Python poate fi folosit pentru manipularea **big data** și realizarea de calcule matematice complexe.
+5. Python poate fi utilizat pentru prototipare rapidă sau pentru dezvoltarea de software gata pentru producție.
+
+## De ce Python?
+
+1. Python functioneaza pe diferite platforme (Windows, Mac, Linux, Raspberry Pi, etc.)
+   
+2. Python are o sintaxa simpla, similara limbii engleze, ceea ce permite programatorilor sa scrie cod cu mai putine linii de cod si automat mult mai rapid comparativ cu alte limbaje de programare.
+3. Python ruleaza pe un sistem de interpretare, ceea ce inseamna ca codul poate fi executat imediat ce este scris. Acest lucru inseamna ca prototipizasrea poate fi foarte rapida.
+4. Python poate fi tratat intr-un mod procedular, un mod OOP sau un mod functional.
+
+## Sintaxa python comparata cu alt limbaj de programare
+
+_Hello World:_
+
+python:
+```python
+print("Hello World!")
+```
+java:
+```java
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+<div style="text-align:center;">
+<a href="https://postimg.cc/xcj46hHG" target="_blank">
+  <img src="https://media.tenor.com/DxeK02KwNbEAAAAd/java-python.gif" alt="Procedural Programming" width="500" height="">
+</a>
+</div>
