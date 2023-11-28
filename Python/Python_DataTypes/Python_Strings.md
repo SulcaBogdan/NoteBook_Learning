@@ -32,6 +32,10 @@ Numaratoare la arrays in programare incepe de la indexul 0. Deci lungimea unui a
 
 ## String slicing
 
+<div style="text-align:center;">
+  <img src="https://media.tenor.com/BK66NJvOliIAAAAC/slicing-people-are-awesome.gif" alt="Procedural Programming" >
+</div>
+
 Putem returna un interval de caractere utilizind sintaxa slice:
 
 | Sintaxă slice  |
