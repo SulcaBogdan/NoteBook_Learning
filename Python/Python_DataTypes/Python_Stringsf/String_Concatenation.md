@@ -4,7 +4,7 @@ Pentru inceput ce inseamna a concatena?
 
 **Concatenarea se refera la operatia de a combina doua sau mai multe siruri sau secvente intr-unul singur.**
 
-Cum se executa concatenarea?
+### Cum se executa concatenarea?
 
 In acest exemplu am concatenat doua string-uri folosind operatorul '+', dar rezultatul este un singur cuvant, deoarece nu exista un spatiu intre cele doua cuvinte.
 
@@ -18,7 +18,7 @@ output:
 Vreaumancare
 ```
 
-Pentru a concatena si cu un spatiu intre cele doua cuvinte folosim " " 
+### Pentru a concatena si cu un spatiu intre cele doua cuvinte folosim **""** 
 
 ```python
 a = "Vreau"
@@ -30,7 +30,7 @@ output:
 Vreau mancare
 ```
 
-O alta metoda de a concatena se poate realiza prin folosirea functiei .join():
+### O alta metoda de a concatena se poate realiza prin folosirea functiei .join():
 
 ```python
 #Folosirea lui .join() pentru a concatena elementele unei liste

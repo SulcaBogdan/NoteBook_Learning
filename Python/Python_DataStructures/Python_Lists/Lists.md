@@ -4,7 +4,7 @@
 
 ## Cum sunt create listele?
 
-Listele sunt create folosind paranteze patrare.
+#### Listele sunt create folosind paranteze patrare.
 
 Exemplu:
 
@@ -13,7 +13,7 @@ Exemplu:
 lista = []
 ```
 
-Putem adauga elemente in lista noastra:
+### Putem adauga elemente in lista noastra:
 
 ```python
 #Initializam lista cu valori numerice
@@ -29,7 +29,9 @@ Elementele listei sunt ordonate, modificabile si permit valori dublicate.
 
 Elementele din lista sunt indexate, primul element are index[0], al doilea index[1], etc..
 
-In momentul in care adaugam un nou element in lista, acesta se va pune la sfarsitul listei. De exemplu
+In momentul in care adaugam un nou element in lista, acesta se va pune la sfarsitul listei. 
+
+De exemplu:
 
 ```python
 lista = [1,2,3]
@@ -55,7 +57,7 @@ output:
 [1,2,3,2]
 ```
 
-Putem afla lungimea listei (sau numarul elementelor din lista) folosind functia len().
+### ### Putem afla lungimea listei (sau numarul elementelor din lista) folosind functia len().
 
 ```python
 lista ["Marian", "Dodan", "Cosmin"]
@@ -83,7 +85,7 @@ lista_combo = [1,2,"Dodan", True] # int, str, bool
 etc
 ```
 
-Alta modalitate de a crea o lista folosind constructorul list():
+### Alta modalitate de a crea o lista folosind constructorul list():
 
 ```python
 lista = list(("Dodan", 2, True)) # elementele listei se pun intre () nu intre []
@@ -93,4 +95,3 @@ print(lista)
 output:
 ["Dodan", 2, True]
 ```
-xx
