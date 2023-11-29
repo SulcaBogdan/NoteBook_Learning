@@ -108,4 +108,5 @@ print("Underscore:", output_underscore)
 output: Hello_World
 ```
 How string uses separators with .join() function. 
+
 !["funny"](https://media.tenor.com/wildOY_tkPEAAAAC/push-it-mr-bean.gif)
