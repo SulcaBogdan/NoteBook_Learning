@@ -1,6 +1,6 @@
 # Strings sunt arrays. Ce inseamna asta?
 
-Un array este o coletie de elemente, care sunt stocate intr-o secventa ordonata si pot fi accesate prin intermediul unor indici(index) numerici sau chei.
+**📘Un array este o coletie de elemente, care sunt stocate intr-o secventa ordonata si pot fi accesate prin intermediul unor indici(index) numerici sau chei.**
 
 Si cum o valoare textuala poate fi un array? De exemplu cuvantul "Masina"?
 
@@ -102,3 +102,4 @@ print(cuvant[-3:-1])
 output:
 ma
 ```
+
