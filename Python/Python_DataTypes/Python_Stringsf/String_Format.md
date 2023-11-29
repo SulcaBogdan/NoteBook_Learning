@@ -16,7 +16,7 @@ Traceback (most recent call last):
 TypeError: must be str, not int
 ```
 
-Primim o eroare deoarece nu putem combina o valoare textuala cu una numerica in acest fel. Pentru ca acest lucru sa fie posibil putem folosii functia .fromat():
+Primim o eroare deoarece nu putem combina o valoare textuala cu una numerica in acest fel. Pentru ca acest lucru sa fie posibil putem folosi functia .fromat():
 
 **Functia .format() preia argumentele transmise, le formateaza si le pune in locul locurilor marcate cu "{}" intr-un array.**
 

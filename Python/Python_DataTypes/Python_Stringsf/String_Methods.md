@@ -49,3 +49,5 @@
 | zfill()       | Completează stringul cu un număr specificat de valori 0 la început |
 
 !["Mr bean"](https://media.tenor.com/wLPoAvY2sIUAAAAd/mr-bean-mr-bean-holiday.gif)
+
+
