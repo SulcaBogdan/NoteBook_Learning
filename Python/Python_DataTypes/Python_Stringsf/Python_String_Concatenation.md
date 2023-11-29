@@ -109,4 +109,4 @@ output: Hello_World
 ```
 How string uses separators with .join() function. 
 
-!["funny"](https://media.tenor.com/wildOY_tkPEAAAAC/push-it-mr-bean.gif)
+![funny](Python\Python_DataTypes\Python_Stringsf\push-it-mr-bean.gif)
