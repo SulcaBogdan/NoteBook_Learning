@@ -107,6 +107,7 @@ output: Hello+World
 print("Underscore:", output_underscore)
 output: Hello_World
 ```
+How string uses separators with .join() function. 
 <div style="text-align:center;">
   <img src="https://media.tenor.com/EQ65Tc1HXo0AAAAd/rowan-atkinson-mr-bean.gif" alt="Procedural Programming" >
 </div>
