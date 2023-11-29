@@ -64,8 +64,7 @@ Vreau mancare
 ### Separatorul 
 
 How string uses separators with .join() function. 
-
-![".join() mr bean"](https://media.tenor.com/EQ65Tc1HXo0AAAAd/rowan-atkinson-mr-bean.gif)
+!["funny"](https://media.tenor.com/wildOY_tkPEAAAAC/push-it-mr-bean.gif)
 
 ```python
 # Exemplu de utilizare a metodei join() cu diferite separatoare
