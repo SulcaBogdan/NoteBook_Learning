@@ -109,8 +109,4 @@ output: Hello_World
 ```
 How string uses separators with .join() function. 
 
-<div style="text-align:center;">
-<a href="https://media.tenor.com/K6MyQIBt_loAAAAd/mr-bean-rowan-atkinson.gif" target="_blank">
-  <img src="https://media.tenor.com/K6MyQIBt_loAAAAd/mr-bean-rowan-atkinson.gif" alt="Procedural Programming" width="500" height="400">
-</a>
-</div>
+![".join() mr bean"](https://media.tenor.com/EQ65Tc1HXo0AAAAd/rowan-atkinson-mr-bean.gif)
