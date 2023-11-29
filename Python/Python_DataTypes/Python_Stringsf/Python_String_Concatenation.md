@@ -109,4 +109,6 @@ output: Hello_World
 ```
 How string uses separators with .join() function. 
 
-![funny](Python\Python_DataTypes\Python_Stringsf\push-it-mr-bean.gif)
+<div style="text-align:center;">
+  <img src="https://i.postimg.cc/TwZfX4hj/push-it-mr-bean.gif" alt="Procedural Programming" >
+</div>
