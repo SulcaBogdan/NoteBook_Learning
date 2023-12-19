@@ -184,6 +184,8 @@ Conditiile sunt ca `current_node` `!=` `None` adica daca `current_node` `->` `No
 
 ## Stergerea unui Node in Linked list
 
+### Stergerea primului element din lista
+
 Putem sterge primul element dintr-un Linked List prin a atribui celui de al doilea element din Linked list pozitia de `head`.
 
 Exemplu:
@@ -205,3 +207,79 @@ Spunem ca `1(head)` `=` `-> 2` adica `1` va fi sters si va ramane doar `2` noul 
 Rezultat
 
 `2(head) -> 3`
+
+### Stergerea ultimului element din lista
+
+```python
+def remove_last_node(self):
+    if self.head is None:
+        return
+    current_node = self.head
+    while(current_node.next.next):
+        current_node = current_node.next
+    current_node.next = None
+```
+
+Am definit o metoda `remove_last_node` care nu primeste nici un argument.
+
+Am verificat daca lista este goala cu un `if statement` . Daca `head` este `None` atunci lista este goala si oprim rularea metodei.
+
+Daca lista nu este goala atunci va trebuii sa iteram prin ea incepand de la primul element pentru a gasi ultimul element. Asadar initializam variabila `current_node` cu `self.head` adica `current_node` este primul element din lista.
+
+Vom parcurge lista cu un `while loop` care are ca conditie ca `current_node.next.next` sa fie `True` adica vom verifica referinta din 2 in 2 si atunci cand o referinta este `None` se va opri loop-ul. Pana cand aceasta conditie nu o sa mai fie `True` vom spune ca `current_node` `=` `current_node.next` adica vom parcurge elementele.
+
+La final vom spune ca penultimul element din lista se va referii la `None` astfel ultimul element din lista va devenii `None`.
+
+`1 -> 2 -> 3` vrem sa-l stergem pe 3. Vom itera prin lista cand referinta dubla va arata catre `None`.
+
+`current_node.next.next` adica daca incepem de la `1` noi verificam daca exita referinta la o valoare de 2 ori adica  `1` `->` `2` `True`, `2` `->` `3` `True`, rezultatul conditiei este `True` asadar se executa blocul `while` si vom trece la urmatorul element din lista adica `2`. Dinou se verifica conditia `2` `->` `3` `True`, `3` `->` `None` `False`, deoarece ultima verificare este `False` atunci loop-ul se opreste si la final vom ramane cu `current_node` `=` `2`.
+
+Dupa ce s-a oprit loop-ul pentru a sterge ultimul element vom spune ca `current_node` `=` `None` adica `2` `->` `None` (care era 3 inainte.)
+
+Se foloseste `current_node.next.next` doarece vrem sa ajungem la penultimul element din lista care are referinta catre ultimul element pe care vrem sa il stergem.
+
+### Stergerea unui element la un index ales din Linked list
+
+```python
+def remove_at_index(self, index):
+    if self.head == None:
+        return
+    current_node = self.head
+    position = 0
+    if position == index:
+        self.head = self.head.next
+    else:
+        while(current_node != None and position+1 != index):
+            position += 1
+            current_node = current_node.next
+    
+    if current_node != None:
+        current_node.next = current_node.next.next
+    else:
+        print('index not found')
+```
+
+Am definit o metoda numita `remove_at_index` care accepta ca argument `index` care reprezinta index-ul elementului pe care vrem sa il stergem din lista. 
+
+Pentru inceput verificam daca lista are elemente printr-un `if statement`. Daca lista este goala oprim metoda din functionare.
+
+Daca lista nu este goala atunci initializam variabila `current_node` `=` `self.head` adica selectam primul nod din lista (head) si initializam si variabila `position` `=` `0` care reprezinta index-ul elementelor din lista.
+
+Mai adaugam o verificare in cazul in care alegem indexul 0 cu un `if statement`. Daca `position` `=` `index` adica `0` `=` `0` atunci stergem primul element din lista ca in metoda de mai sus.
+
+Dar daca `index` `!=` `0` atunci parcurgem lista incepand de la primul element folosind `while loop`. Conditiile sunt ca `current_node` `!=` `None` adica nodul curent sa existe si `position+1` `!=` `index` adica pozitia din lista + 1 sa fie diferita de `index`. Daca una dintre cele doua conditii devine `Flase` atunci loop-ul va inceta. Daca prima conditie este `False` rezulta ca nu s-a gasit indexul in lista iar daca a doua conditie este `False` rezulta ca s-a gasit indexul.
+
+Se mai face o verificare cu un `if statement` pentru a vedea rezultatul loop-ului. Daca indexul a fost gasit atunci spunem ca `current_node.next` `=` `current_node.next.next` adica sarim peste elementul dintre cele doua elemente.
+
+
+`1 -> 2 -> 3 -> 4` vrem sa stergem elementul `2` de pe indexul `1`
+
+Se verifica lista daca este goala ceea ce nu este deci mergem mai departe, apoi se verifica daca indexul nostru `1` `=` `position` adica cu `0` ceea ce este `False` deci mergem mai departe si intram in `while loop`.
+
+Se verifica prima conditie `current_node` `!=` `None` adica `1` `!=` `None` `True`. Se verifica si a doua conditie `position+1` `!=` `index` adica `1` `!=` `1` care este `False` deci loop-ul se va opri aici.
+
+Verificam la final daca elementul de pe `current_node` nu este `None` ceea ce este `True` si intram in blocul `if statement` unde spunem ca `current_node.next` `=` `current_node.next.next` adica `1(current_node) ->(current_node.next) ->(current_node.next.next) -> 3 -> 4`. Tot ce facem este sa setam referinta lui `1` peste nodul cu valoarea `2` direct spre nodul cu valoare `3`. Iar in proces nodul cu valoarea `2` va fi sters.
+
+Rezultat
+
+`1(head) -> 3 -> 4`
