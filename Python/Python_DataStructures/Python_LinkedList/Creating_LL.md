@@ -138,3 +138,70 @@ Exemplu
 iteram prin lista si ajungem la `4` unde spunem ca `4(current_node) ->(current_node.next) 5(new_node)` 
 
 Rezultatul final este `1 -> 2 -> 3 -> 4 -> 5`
+
+Deci am invatat sa adaugam la inceput un element , la un index ales si la final. Dar daca vreau sa modific un element deja existent?
+
+## Modificarea unui Node din Linked list
+
+```python
+def updateNode(self, val, index):
+    current_node = self.head
+    position = 0
+    if position == index:
+        current_node.data = val
+    else:
+        while(current_node != None and position != index):
+            position +=1
+            current_node = current_node.next
+
+        if current_node != None:
+            current_node.data = val
+        else:
+            print('index not found')
+```
+
+Am definit metoda `updateNode` care accepta doua argumente, `val` pentru valoarea pe care vrem sa o suprascriem si `index` care reprezinta indexul elementului din lista pe care vrem sa il inlocuim.
+
+
+Pentru a cauta index-ul din lista va trebuii sa parcurgem lista, de aceea initializam variabila `current_node` cu `self.head` adica incepem iteratia de la primul element din lista. Initializam si variabila `position` cu `0` care reprezinta de la ce valoare incepe numaratoare adica de la indexul 0.
+
+Verificam daca lista are elemente pentru a nu folosi resurse degeaba folosind un `if statement`. Spunem daca `position` `=` `index` adica daca indexul pe care l-am pus ca argument este `0` atunci prima valoare din lista va avea valoarea pusa de noi.
+
+Exemplu
+
+`1 -> 2 -> 3` indexul ales `=` `0` si valoarea de inlocuit `=` `4`
+
+Verificam daca `position` `=` `index` adica daca `0` `=` `0` True.
+
+Atunci `current_node.data` `=` `val` adica valoarea elementului initial va devenii valoarea pusa de noi.
+
+Rezultat
+`4 -> 2 -> 3`
+
+Daca indexul ales de noi este mai mare ca 0 atunci vom parcurge lista cu un `while loop` pana cand vom gasii indexul dorit.
+
+Conditiile sunt ca `current_node` `!=` `None` adica daca `current_node` `->` `None` se va oprii loop-ul si indexul nu a fost gasit si conditia ca `position` `!=` `index` adica daca `position` `=` `index` se va oprii loop-ul si inseamna ca indexul a fost gasit iar valoarea va fi inlocuita mai departe.
+
+## Stergerea unui Node in Linked list
+
+Putem sterge primul element dintr-un Linked List prin a atribui celui de al doilea element din Linked list pozitia de `head`.
+
+Exemplu:
+
+```python
+def remove_first_node(self):
+    if(self.head == None):
+        return
+    else:
+        self.head = self.head.next      
+```
+
+Am creat o metoda `remove_first_node` care nu primeste nici un argument. Verificam daca `head` este None si daca conditia este indeplinita vom opri metoda deoarece lista este goala, dar daca nu este `None` atunci vom spune ca `head` `=` `head.next` adica noul `head` va fi elementul catre care precedentul `head` avea referinta.
+
+`1(head) -> 2 -> 3` vrem sa stergem primul element adica `1`
+
+Spunem ca `1(head)` `=` `-> 2` adica `1` va fi sters si va ramane doar `2` noul `head`
+
+Rezultat
+
+`2(head) -> 3`
