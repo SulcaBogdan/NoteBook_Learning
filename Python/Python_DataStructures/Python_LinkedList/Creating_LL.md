@@ -283,3 +283,61 @@ Verificam la final daca elementul de pe `current_node` nu este `None` ceea ce es
 Rezultat
 
 `1(head) -> 3 -> 4`
+
+Am sters un nod dupa index, dar putem sterge un nod dupa valoare? Da!
+
+### Stergerea unui nod dupa valoarea sa 
+
+```python
+def remove_at_value(self, data):
+    if self.head is None:
+        return
+    
+    current_node = self.head
+
+    if current_node.data == data:
+        current_node = current_node.next
+        return
+    
+    while(current_node != None and current_node.next.data != data):
+        current_node = current_node.next
+
+    if current_node == None:
+        return
+    else:
+        current_node.next = current_node.next.next
+```
+
+Am definit metoda `remove_at_value` care accepta ca argument `data` care reprezinta valoare pe care vrem sa o gasim in lista.
+
+Pentru inceput verificam daca lista este goala cu un `if statement`. Daca aceasta este goala folosim `return` pentru a opri functionarea metodei, dar daca nu este goala atunci mergem mai departe.
+
+Initializam variabila `current_node` cu `self.head` care reprezinta primul element din lista noastra.
+
+Verificam daca valoarea primului element din lista este `=` cu valoarea introdusa de noi printr-un `if statement` . `if current_node.data == data:` adica 'Daca valoarea nodului curent este `=` cu valoarea introdusa de noi `data`' atunci sterge primul element din lista prin `current_node` `=` `current_node.next` adica `current_node` care este `self.head` va fi egala cu referinta acestuia adica urmatorul element din lista mai exact `current_node.next`
+
+
+Daca valoarea lui `current_node.data` nu este egala cu `data` atunci mergem mai departe.
+
+Pentru a itera folosim `while loop` cu conditiile ca `current_node` sa nu fie `None` si `current_node.next.data` sa nu fie egala cu `data` . Daca prima conditie este `False` rezulta ca s-a ajuns la sfarsitul listei si valoarea `data` nu a fost gasita iar daca a doua conditie este `False` rezulta ca s-a gasit nodul cu valoarea lui `data`. In oricare conditie daca este `False` loop-ul se va opri.
+
+Dupa verificam rezultatul `while loop` printr-un `if statement` . Daca `current_node` `=` `None` adica daca nu s-a gasit `data` in lista `return` ca sa oprim metoda. Altfel `current_node.next` `=` `current_node.next.next` adica mutam referinta de pe `current_node.next` pe urmatorul element `current_node.next.next` astfel stergand elementul cu valoarea noastra in proces.
+
+`1 -> 2 -> 3 -> 4 -> 5` vrem sa stergem elementul cu valoarea `4`
+
+Verificam daca lista este goala, ceea ce nu este deci mergem mai departe.
+
+Verificam daca `4` este primul element din lista, adica `1` `=` `4` ? `False`, mergem mai departe.
+
+Iteram prin lista pana ajungem la nodul cu valoarea 4. Procesul ar arata cam asa. Facem un `while loop` cu cele 2 conditii de mai sus si verificam fiecare conditie in parte. Prima conditie `current_node != None`? adica `1 != None`? `True`, urmatoarea conditie `current_node.next.data != data`? adica `current_node_next` este referinta primului element catre al doilea element adica `1` `->` `2`, deci cand spunem `.data` ne referim la valoarea al doilea element din lista care este `2`. Deci `2` != `4`? `True` intram in blocul `while` si parcurgem la urmatorul element prin `current_node` = `current_node.next`.
+
+Intram iar in `while loop` si verificam iar conditiile. `current_node != None` adica `2 != None` `True` , verificam si a doua conditie `current_node.next.data != data ` adica `3 != 4` `True`. Intram iar in blocul `while` si parcurgem mai departe elementul din lista cu `current_node` `=` `current_node.next` adica `2` `=` `3`.
+
+Revenim iar la `while loop` unde se verifica iar conditiile. Prima conditie `current_node != None` adica `3 != None` `True`, verificam si a doua conditie `current_node.next.data != data` adica `4 != 4` `False`. Aici se va opri iteratia si vom merge mai departe deoarece nu s-a mai respectat ultima conditie insemnand ca s-a gasit elementul cu valoarea `4`.
+
+Verificam la final rezultatul cu un `if statement` unde spunem ca `current_node.next` adica `3` `=` `current_node.next.next` adica `5` . Deci in acest proces elementul cu valoarea `4` va fi sters.
+
+Rezultat
+
+`1(head) -> 2 -> 3 -> 5`
+``
