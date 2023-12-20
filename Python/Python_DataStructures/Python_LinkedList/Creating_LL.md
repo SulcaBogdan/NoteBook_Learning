@@ -340,4 +340,109 @@ Verificam la final rezultatul cu un `if statement` unde spunem ca `current_node.
 Rezultat
 
 `1(head) -> 2 -> 3 -> 5`
-``
+
+
+Am invatat sa adaugam, sa stergem, sa inlocuim noduri si datele lor din Linked list, dar daca vrem sa afisam lista, cum facem?
+
+## Parcurgerea si printarea unui Linked list
+
+```python
+def printLL(self):
+    if self.head is None:
+        return
+    else:
+        current_node = self.head
+        while (current_node):
+            print(current_node.data)
+            current_node = current_node.next
+```
+
+Am definit metoda `printLL` care parcurge lista si printeaza toate valorile nodurilor din lista.
+
+Pentru inceput verificam cu un `if statement` daca lista este goala `if self.head is Node` adica daca primul element nu exista oprim metoda, dar daca lista nu este goala continuam.
+
+Initializam variabila `current_node` `=` `self.head` adica selectam primul element din lista si stocam informatia in variabila `current_node`, apoi cu un `while loop` vom parcurge lista.
+
+Conditia loop-ului este ca `current_node` sa fie `True` adica sa existe. In momentul in care `current_node` este `None` se opreste loop-ul.
+
+Pentru fiecare repetitie a loop-ului si va printa `current_node.data` adica valoarea nodului si pentru a selecta urmatorul nod spunem `current_node = current_node.next` adica selectam prin referinta nodului curent urmatorul nod din lista.
+
+`1(head) -> 2 -> 3 -> 4` vrem sa printam toate elementele vom folosii metoda `printLL`
+
+Intai verificam daca lista este goala cu un `if statement`, ceea ce nu este deci mergem mai departe.
+
+Apoi selectam primul element din lista, adica `head` (`1`) si incepem un `while loop` cu conditia ca nodul sa existe.
+
+`1` exista? `True` ii printam valoarea nodului adica `1` si trecem la urmatoare referinta a nodului curent adica `2`.
+
+`2` exista? `True` ii printam valoarea nodului adica `2` si trecem la urmatoare referinta a nodului curent adica `3`.
+
+`3` exista? `True` ii printam valoarea nodului adica `3` si trecem la urmatoare referinta a nodului curent adica `4`.
+
+`4` exista? `True` ii printam valoarea nodului adica `4` si trecem la urmatoare referinta a nodului curent adica `None`.
+
+`None` exista? `False` oprim loop-ul.
+
+Rezultat
+
+`1`
+
+`2`
+
+`3`
+
+`4`
+
+## Afisarea lungimii unui Linked list
+
+```python
+def sizeOfLL(self):
+    if self.head is None:
+        return 0
+    size = 0
+    current_node = self.head
+    while (current_node):
+        size+=1
+        current_node = current_node.next
+    return size
+```
+
+Am definit metoda `sizeOfLL` care va returna lungimea a Linked list.
+
+Pentru inceput verificam daca lista are sau nu element printr-un `if statement`. Daca aceasta nu are elemente vom returna `0`.Daca nu este goala vom incepe procesul de aflare a lungimii.
+
+Initializam variabila `size` cu valoarea `0` pentru a tine contul nodurilor din lista.
+
+Stabilim punctul de pornire a enumeratiei prin `current_node` `=` `self.head` adica am stocat informatia primului element din lista `head` in variabila `current_node`.
+
+Apoi parcurgem lista folosind `while loop` cu conditia ca elementul curent sa existe sau sa nu fie `None`.
+
+La fiecare iteratie adunam 1 la `size` deoarce pentru fiecare element parcurs de loop vom adauga `1` variabile `size` si pentru a trece la urmatorul element din lista vom folosii referinta nodului curent adica `current_node = current_node.next`.
+
+La final returnam valoarea variabilei `size` care va afisa lungimea listei.
+
+`1 -> 2 -> 3 -> 4 -> 5` Vrem sa aflam lungimea listei si folosim metoda `sizeOfLL`
+
+
+Verificam daca lista are noduri prezente printr-un `if statement`. `if self.head is None` adica daca primul element nu exista `return 0`, dar daca primul element exista atunci mergem mai departe.
+
+Initializam variabila `size` cu valoarea `0` pentru a tine evidenta elementelor din lista.
+
+Initializam variabila `current_node` `=` `self.head` pentru a selecta punctul de pornire a iteratiei, adica primul element din lista.
+
+Pornim iteratia printr-un `while loop` cu conditia ca `current_node` sa existe in lista . Daca acesta exista loop-ul continua pana cand `current_node` va fi `None`.
+
+Si incepem `1` exista? `True` , adauga `1` la `size` si selecteaza urmatorul nod cu referinta nodului curent.
+
+`2` exista? `True` , adauga `1` la `size` si selecteaza urmatorul nod cu referinta nodului curent.
+
+`3` exista? `True` , adauga `1` la `size` si selecteaza urmatorul nod cu referinta nodului curent.
+
+`4` exista? `True` , adauga `1` la `size` si selecteaza urmatorul nod cu referinta nodului curent.
+
+`5` exista? `True` , adauga `1` la `size` si selecteaza urmatorul nod cu referinta nodului curent.
+
+`None` exista? `False`, oprim loop-ul si returnam valoarea variabilei `size` .
+
+Rezultat
+5
