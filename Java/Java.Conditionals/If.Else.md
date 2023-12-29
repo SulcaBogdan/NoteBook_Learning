@@ -99,9 +99,6 @@ if (condition1) {
 } else {
   // blocul de cod o sa fie executat daca condition1 si condition2 sunt false
 }
-
-output:
-
 ```
 
 ```java
