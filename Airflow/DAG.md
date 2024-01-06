@@ -786,10 +786,272 @@ package1/__init__.py
 package1/functions.py
 ```
 
-Rețineți că DAG-urile împachetate vin cu câteva avertismente:
+### Rețineți că DAG-urile împachetate vin cu câteva avertismente:
 
 - Nu pot fi folosite dacă aveți activată serializarea prin pickling.
 - Nu pot conține biblioteci compilate (de exemplu, libz.so), doar Python pur.
 - Vor fi introduse în sys.path al lui Python și pot fi importate de orice alt cod din procesul Airflow, așa că asigurați-vă că numele pachetelor nu intră în conflict cu alte pachete deja instalate în sistemul dvs.
 
 În general, dacă aveți un set complex de dependențe și module compilate, este probabil mai bine să utilizați sistemul Python virtualenv și să instalați pachetele necesare pe sistemele țintă cu ajutorul lui pip.
+
+
+Un fișier `.airflowignore` specifică directoarele sau fișierele din `DAG_FOLDER` sau `PLUGINS_FOLDER` pe care Airflow intenționează să le ignore. Airflow acceptă două variante de sintaxă pentru modelele din fișier, așa cum este specificat de parametrul de configurare `DAG_IGNORE_FILE_SYNTAX` (adăugat în Airflow 2.3): `regexp` și `glob`.
+
+### Nota
+
+Sintaxa implicită pentru `DAG_IGNORE_FILE_SYNTAX` este regexp pentru a asigura compatibilitatea înapoi.
+
+Pentru sintaxa tipului `regexp` (implicit), fiecare linie din `.airflowignore` specifică un șablon de expresie regulată, iar directoarele sau fișierele ale căror nume (nu ID-ul DAG) se potrivesc cu oricare dintre șabloane vor fi ignorate (sub capotă, se folosește `Pattern.search()` pentru a potrivi șablonul). Utilizați caracterul `#` pentru a indica un comentariu; toate caracterele de pe o linie care urmează unui `#` vor fi ignorate.
+
+Pentru majoritatea potrivirilor de tip regexp în Airflow, motorul de expresii regulate este re2, care nu suportă explicit multe funcționalități avansate, vă rugăm să consultați documentația sa pentru mai multe informații.
+
+Cu sintaxa `glob`, șabloanele funcționează la fel ca într-un fișier `.gitignore`:
+
+- Caracterul `*` se potrivește cu orice număr de caractere, cu excepția /
+- Caracterul `?` se potrivește cu orice caracter singular, cu excepția /
+- Notația pentru interval, de exemplu [a-zA-Z], poate fi utilizată pentru a se potrivi cu unul dintre caracterele dintr-un interval
+- Un șablon poate fi negat prin prefixare cu `!`. Șabloanele sunt evaluate în ordine, astfel încât o negare poate anula un șablon definit anterior în același fișier sau șabloane definite într-un director părinte.
+- Două asteriscuri (`**`) pot fi utilizate pentru a face potriviri în întregul arbore de directoare. De exemplu, `**/__pycache__/` va ignora directoarele `__pycache__` în fiecare subdirector la o adâncime infinită.
+- Dacă există un / la început sau în mijloc (sau ambele) ale șablonului, atunci șablonul este relativ la nivelul directorului particular .airflowignore în sine. În caz contrar, șablonul se poate potrivi și la orice nivel sub nivelul .airflowignore.
+
+Fișierul .airflowignore ar trebui plasat în DAG_FOLDER. De exemplu, puteți pregăti un fișier .airflowignore folosind sintaxa regexp cu conținut:
+
+
+```glob
+project_a
+tenant_[\d]
+```
+
+Sau, echivalent, în sintaxa `glob`
+
+
+```glob
+**/*project_a*
+tenant_[0-9]*
+```
+
+Apoi, fișierele precum `project_a_dag_1.py`, `TESTING_project_a.py`, `tenant_1.py`, `project_a/dag_1.py` și `tenant_1/dag_1.py` din `DAG_FOLDER `vor fi ignorate (dacă numele unui director se potrivește cu oricare dintre șabloane, acest director și toate subdirectoarele sale nu vor fi scanate deloc de către Airflow. Acest lucru îmbunătățește eficiența găsirii DAG).
+
+Domeniul de aplicare al unui fișier `.airflowignore` este directorul în care se află, plus toate subdirectoarele sale. Puteți pregăti, de asemenea, un fișier `.airflowignore` pentru un subfolder din `DAG_FOLDER` și acesta va fi aplicabil doar pentru acel subfolder.
+
+## Dependente între DAG-uri
+`Adăugat în Airflow 2.1`
+
+În timp ce dependențele între sarcinile dintr-un DAG sunt definite în mod explicit prin relațiile de sus și jos, dependențele între DAG-uri sunt puțin mai complexe. În general, există două moduri în care un DAG poate depinde de altul:
+
+- declanșarea - `TriggerDagRunOperator`
+- așteptarea - `ExternalTaskSensor`
+
+O dificultate suplimentară este că un DAG ar putea să aștepte sau să declanșeze mai multe rulări ale celuilalt DAG cu intervale de date diferite. Meniul Vizualizare dependențe DAG -> Răsfoire -> Dependințe DAG ajută la vizualizarea dependențelor dintre DAG-uri. Dependințele sunt calculate de planificator în timpul serializării DAG și serverul web le folosește pentru a construi graful de dependențe.
+
+Detectorul de dependențe este configurabil, astfel încât puteți implementa propria logică diferită de cea implicită în DependencyDetector.
+
+## Pauzarea, Dezactivarea și Ștergerea DAG-urilor
+
+DAG-urile au mai multe stări când nu rulează. DAG-urile pot fi puse pe pauză, dezactivate și, în final, toate metadatele pentru DAG pot fi șterse.
+
+Un DAG poate fi pus pe pauză prin intermediul UI-ului atunci când este prezent în `DAGS_FOLDER`, iar planificatorul îl salvează în baza de date, dar utilizatorul alege să-l dezactiveze prin intermediul UI-ului. Acțiunile "pauză" și "repornire" sunt disponibile atât prin UI, cât și prin API. Un DAG pus pe pauză nu este programat de planificator, dar îl puteți declanșa prin UI pentru rulări manuale. În UI, puteți vedea DAG-urile puse pe pauză (în fila Puse pe pauză). DAG-urile care nu sunt pe pauză pot fi găsite în fila Activ.
+
+Un DAG poate fi dezactivat (nu îl confundați cu eticheta Activ în UI) prin eliminarea sa din `DAGS_FOLDER`. Când planificatorul parsează `DAGS_FOLDER` și nu găsește DAG-ul pe care l-a văzut anterior și l-a salvat în baza de date, îl va seta ca dezactivat. Metadatele și istoricul DAG-ului sunt păstrate pentru DAG-urile dezactivate, iar când DAG-ul este adăugat din nou în `DAGS_FOLDER`, acesta va fi din nou activat, iar istoricul va fi vizibil. Nu puteți activa/dezactiva un DAG prin intermediul UI-ului sau API-ului, acest lucru poate fi făcut doar prin eliminarea fișierelor din `DAGS_FOLDER`. Încă o dată - niciun date pentru rulările istorice ale DAG-ului nu sunt pierdute atunci când este dezactivat de către planificator. Notați că fila Activ în interfața de utilizare Airflow se referă la DAG-uri care nu sunt în același timp activate și ne-puse pe pauză, astfel că acest lucru poate fi inițial puțin confuz.
+
+Nu puteți vedea DAG-urile dezactivate în UI - uneori puteți vedea rulările istorice, dar atunci când încercați să vizualizați informații despre acestea, veți vedea eroarea că DAG-ul lipsește.
+
+De asemenea, puteți șterge metadatele DAG-ului din baza de date de metadate folosind UI-ul sau API-ul, dar acest lucru nu duce întotdeauna la dispariția DAG-ului din UI - ceea ce poate fi, de asemenea, inițial puțin confuz. Dacă DAG-ul este încă în `DAGS_FOLDER` atunci când ștergeți metadatele, DAG-ul va reapărea deoarece planificatorul va parsa folderul, doar informațiile despre rulările istorice pentru DAG vor fi eliminate.
+
+Toate acestea înseamnă că dacă doriți să ștergeți efectiv un DAG și toate metadatele sale istorice, trebuie să urmați acești pași:
+
+1. Puneți DAG-ul pe pauză.
+2. Ștergeți metadatele istorice din baza de date, prin intermediul UI-ului sau API-ului.
+3. Ștergeți fișierul DAG din `DAGS_FOLDER` și așteptați până când devine inactiv.
+
+## Rulări DAG
+
+O DAG Run este un obiect care reprezintă o instanțiere a DAG-ului într-un moment dat. Ori de câte ori DAG-ul este executat, este creată o DAG Run și toate sarcinile din interiorul său sunt executate. Starea DAG Run depinde de stările sarcinilor. Fiecare DAG Run este rulat separat de celelalte, ceea ce înseamnă că puteți avea multe rulări ale unui DAG în același timp.
+
+### Starea Rulării DAG
+
+Starea unei DAG Run este determinată atunci când execuția DAG-ului este finalizată. Execuția DAG-ului depinde de sarcinile sale și de dependențele acestora. Starea este atribuită DAG Run atunci când toate sarcinile se află într-una dintre stările terminale (adică dacă nu există o tranziție posibilă către o altă stare), cum ar fi succes, eșec sau trecere cu vederea. Starea unei DAG Run este atribuită pe baza a ceea ce se numește "noduri frunză" sau simplu "frunze". Nodurile frunză sunt sarcinile fără copii.
+
+
+Există două stări terminale posibile pentru DAG Run:
+
+- **success** dacă toate stările nodurilor frunză sunt fie succes, fie trecute cu vederea,
+
+- **failed** dacă oricare dintre stările nodurilor frunză este fie eșec, fie upstream_failed.
+
+**Notă**
+
+Fii atent dacă unele dintre sarcinile tale au definite reguli de declanșare specifice. Acestea pot duce la un comportament neașteptat, de exemplu, dacă ai o sarcină frunză cu regulă de declanșare "`all_done`", ea va fi executată indiferent de stările celorlalte sarcini, iar dacă va reuși, întreaga DAG Run va fi marcată ca succes, chiar dacă ceva a eșuat pe parcurs.
+
+`Adăugat în Airflow 2.7`
+
+DAG-urile care au o DAG Run în desfășurare pot fi afișate pe tabloul de bord al interfeței de utilizator în fila "`Running`". Similar, DAG-urile al căror ultim DAG Run este marcat ca eșuat pot fi găsite în fila "`Failed`".
+
+### Presete Cron
+
+Puteți seta DAG-ul să ruleze pe un schedule simplu setând argumentul său de `schedule` la o `expresie cron`, un obiect `datetime.timedelta` sau la unul dintre următoarele "preseturi" cron. Pentru cerințe de programare mai elaborate, puteți implementa un program personalizat. Notați că Airflow parsează expresiile cron cu ajutorul bibliotecii croniter, care acceptă o sintaxă extinsă pentru șirurile cron. Consultați documentația lor pe GitHub. De exemplu, puteți crea un program DAG să ruleze la 12 noaptea în prima zi de luni a lunii cu sintaxa cron extinsă: `0 0 * * MON#1`.
+
+
+| Preset      | Semnificație                                               | Expresie Cron | 
+|-------------|------------------------------------------------------------|---------------| 
+| `None`      | Nu programați, utilizați pentru DAG-urile exclusiv „externally triggered” | -             | 
+| `@once`     | Programați o singură dată și numai o dată                      | -             | 
+| `@continuous`| Rulează imediat ce se termină rularea anterioară               | -             | 
+| `@hourly`   | Rulează o dată pe oră, la sfârșitul orei                       | `0 * * * *`   | 
+| `@daily`    | Rulează o dată pe zi la miezul nopții (24:00)                  | `0 0 * * *`   | 
+| `@weekly`   | Rulează o dată pe săptămână la miezul nopții (24:00) în ziua de duminică | `0 0 * * 0`   | 
+| `@monthly`  | Rulează o dată pe lună la miezul nopții (24:00) în prima zi a lunii | `0 0 1 * *`   | 
+| `@quarterly`| Rulează o dată la un sfert la miezul nopții (24:00) în prima zi a trimestrului | `0 0 1 */3 *` | 
+| `@yearly`   | Rulează o dată pe an la miezul nopții (24:00) în 1 ianuarie    | `0 0 1 1 *`   | 
+
+
+## Programare și Interval de Date
+
+Fiecare rulare a DAG-ului în Airflow are un "interval de date" asignat, care reprezintă intervalul de timp în care operează. Pentru un DAG programat cu @daily, de exemplu, fiecare interval de date începe în fiecare zi la miezul nopții (00:00) și se încheie la miezul nopții (24:00).
+
+O rulare a DAG-ului este de obicei programată după ce intervalul de date asociat s-a încheiat, pentru a se asigura că rularea este capabilă să colecteze toate datele în timpul perioadei de timp. Cu alte cuvinte, o rulare care acoperă perioada de date 2020-01-01 de obicei nu începe să ruleze decât după ce s-a încheiat 2020-01-02 00:00:00.
+
+Toate datele în Airflow sunt legate de conceptul de interval de date într-un fel. "Data logică" (numită și execution_date în versiunile Airflow anterioare versiunii 2.2) a unei rulări a DAG-ului, de exemplu, indică începutul intervalului de date, nu momentul când DAG-ul este efectiv executat.
+
+La fel, deoarece argumentul start_date pentru DAG și sarcinile sale arată către aceeași dată logică, marchează începutul primului interval de date al DAG-ului, nu când încep să ruleze sarcinile în DAG. Cu alte cuvinte, o rulare a DAG-ului va fi programată numai un interval după start_date.
+
+
+Dacă o expresie cron sau un obiect `timedelta` nu este suficient pentru a exprima programul DAG, data logică sau intervalul de date, consultați Orare. Pentru mai multe informații despre data logică, consultați Rularea DAG-urilor și Ce înseamnă execution_date?
+
+## Reluați DAG
+Pot exista cazuri în care veți dori să executați din nou DAG. Un astfel de caz este atunci când rularea DAG programată eșuează.
+
+### Catchup
+Un DAG Airflow definit cu un `start_date`, eventual o end_date și un program care nu este un set de date, definește o serie de intervale pe care planificatorul le transformă în DAG individual, care rulează și le execută. Planificatorul, în mod implicit, va lansa o rulare DAG pentru orice interval de date care nu a fost rulat de la ultimul interval de date (sau a fost șters). Acest concept se numește Catchup.
+
+Dacă DAG-ul dvs. nu este scris pentru a-și gestiona recuperarea (adică, nu se limitează la interval, ci în schimb la Acum, de exemplu), atunci veți dori să dezactivați recuperarea. Acest lucru se poate face setând `catchup=False` în DAG sau `catchup_by_default=False` în fișierul de configurare. Când este dezactivat, planificatorul creează o rulare DAG numai pentru cel mai recent interval.
+
+```python
+"""
+Code that goes along with the Airflow tutorial located at:
+https://github.com/apache/airflow/blob/main/airflow/example_dags/tutorial.py
+"""
+from airflow.models.dag import DAG
+from airflow.operators.bash import BashOperator
+
+import datetime
+import pendulum
+
+dag = DAG(
+    "tutorial",
+    default_args={
+        "depends_on_past": True,
+        "retries": 1,
+        "retry_delay": datetime.timedelta(minutes=3),
+    },
+    start_date=pendulum.datetime(2015, 12, 1, tz="UTC"),
+    description="A simple tutorial DAG",
+    schedule="@daily",
+    catchup=False,
+)
+```
+
+În exemplul de mai sus, dacă DAG este preluat de scheduler daemon pe 2016-01-02 la 6 AM, (sau din linia de comandă), va fi creată o singură Execuție DAG cu date între 2016-01-01 și 2016-01-02, iar următorul va fi creat imediat după miezul nopții în dimineața zilei de 2016-01-03 cu un interval de date între 2016-01-02 și 2016-01-03.
+
+Rețineți că utilizarea unui obiect `datetime.timedelta` ca program poate duce la un comportament diferit. Într-un astfel de caz, singurul DAG Run creat va acoperi date între 2016-01-01 06:00 și 2016-01-02 06:00 (un interval de program care se termină acum). Pentru o descriere mai detaliată a diferențelor dintre un program cron și un program bazat pe delta, aruncați o privire la comparația orarelor
+
+Dacă valoarea `dag.catchup` ar fi fost `True`, planificatorul ar fi creat o Execuție DAG pentru fiecare interval finalizat între 2015-12-01 și 2016-01-02 (dar nu încă unul pentru 2016-01-02, ca acel interval nu s-a finalizat) iar planificatorul le va executa secvenţial.
+
+`Catchup` este declanșat și atunci când dezactivați un DAG pentru o perioadă specificată și apoi îl reactivați.
+
+Acest comportament este excelent pentru seturile de date atomice care pot fi împărțite cu ușurință în perioade. Dezactivarea catchup-ului este grozavă dacă DAG-ul dvs. efectuează catchup intern.
+
+### Backfill
+Poate fi cazul în care doriți să rulați DAG pentru o perioadă istorică specificată, de exemplu, un DAG de completare a datelor este creat cu `start_date` 2019-11-21, dar un alt utilizator necesită datele de ieșire de acum o lună, adică 2019-10 -21. Acest proces este cunoscut sub numele de umplere.
+
+Este posibil să doriți să completați datele chiar și în cazurile în care `catchup` este dezactivat. Acest lucru se poate face prin CLI. Rulați comanda de mai jos
+
+```python
+airflow dags backfill \
+    --start-date START_DATE \
+    --end-date END_DATE \
+    dag_id
+```
+
+### Rularea din nou a Task-urilor
+
+Unele dintre task-uri pot eșua în timpul rulării programate. Odată ce ați remediat erorile după ce ați consultat jurnalele, puteți să rulați din nou task-urile prin ștergerea lor pentru data programată. Ștergerea unei instanțe de task nu șterge înregistrarea instanței de task. În schimb, actualizează max_tries la 0 și setează starea actuală a instanței de task la None, ceea ce determină rularea din nou a task-ului.
+
+Faceți clic pe task-ul eșuat în vizualizările Tree sau Graph și apoi faceți clic pe Clear. Executorul îl va rula din nou.
+
+Există mai multe opțiuni pe care le puteți selecta pentru a rula din nou:
+
+- **Past** - Toate instanțele task-ului în rulările anterioare ale intervalului de date cel mai recent al DAG-ului
+- **Future** - Toate instanțele task-ului în rulările după intervalul de date cel mai recent al DAG-ului
+- **Upstream** - Task-urile upstream în DAG-ul curent
+- **Downstream** - Task-urile downstream în DAG-ul curent
+- **Recursive** - Toate task-urile din DAG-urile copil și DAG-urile părinte
+- **Failed** - Doar task-urile eșuate în cea mai recentă rulare a DAG-ului
+
+Puteți șterge task-ul și prin intermediul CLI folosind comanda:
+
+```python
+airflow tasks clear dag_id \
+    --task-regex task_regex \
+    --start-date START_DATE \
+    --end-date END_DATE
+```
+Pentru `dag_id` și intervalul de timp specificate, comanda șterge toate instanțele sarcinilor care se potrivesc cu `regex`. Pentru mai multe opțiuni, puteți verifica ajutorul comenzii clear:
+
+
+```python
+airflow tasks clear --help
+```
+### External triggers
+Rețineți că DAG Runs pot fi create și manual prin CLI. Doar rulați comanda -
+
+```python
+airflow dags trigger --exec-date logical_date run_id
+```
+
+Execuțiile DAG create extern planificatorului sunt asociate cu marcajul de timp al declanșatorului și sunt afișate în interfața de utilizare alături de rulările DAG programate. Data logică transmisă în interiorul DAG poate fi specificată folosind argumentul `-e`. Valoarea implicită este data curentă în fusul orar UTC.
+
+În plus, puteți, de asemenea, să declanșați manual o rulare DAG folosind interfața de utilizare web (fila DAG-uri -> coloana Linkuri -> butonul `Trigger Dag`)
+
+### Transmiterea parametrilor la declanșarea DAG-urilor
+Când declanșați un DAG din CLI, API-ul REST sau UI, este posibil să treceți configurația pentru o rulare DAG ca blob JSON.
+
+Exemplu de DAG parametrizat:
+
+```python
+import pendulum
+
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+
+dag = DAG(
+    "example_parameterized_dag",
+    schedule=None,
+    start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
+    catchup=False,
+)
+
+parameterized_task = BashOperator(
+    task_id="parameterized_task",
+    bash_command="echo value: {{ dag_run.conf['conf1'] }}",
+    dag=dag,
+)
+```
+
+Notă: Parametrii din `dag_run.conf` pot fi utilizați numai într-un câmp șablon al unui operator.
+
+### Folosind CLI
+
+```python
+airflow dags trigger --conf '{"conf1": "value1"}' example_parameterized_dag
+```
+
+### Folosind UI
+
+![ui](https://airflow.apache.org/docs/apache-airflow/stable/_images/example_passing_conf.png)
+
+
+## A tine minte
+**Marcarea instanțelor de activitate ca eșuate se poate face prin interfața de utilizare. Aceasta poate fi folosită pentru a opri rularea instanțelor de activitate.**
+
+**Marcarea instanțelor de activitate ca reușite se poate face prin interfața de utilizare. Acest lucru este în principal pentru a remedia negative false sau, de exemplu, atunci când remedierea a fost aplicată în afara Airflow.**
