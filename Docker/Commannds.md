@@ -1,7 +1,5 @@
 # Comnenzine Docker
 
-Desigur, voi traduce în română și voi formata în markdown folosind tabele:
-
 ### Docker Build Comenzi:
 
 | Comandă Docker                               | Explicație                                       | Exemplu                                               |

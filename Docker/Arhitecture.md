@@ -5,11 +5,11 @@
 
 [![docker-architecture.webp](https://i.postimg.cc/1zwK7BNv/docker-architecture.webp)](https://postimg.cc/v189cWhn)
 
-## Demonul Docker
-Demonul Docker (dockerd) ascultă cererile API Docker și administrează obiectele Docker precum imagini, containere, rețele și volume. Un demon poate, de asemenea, comunica cu alți demoni pentru a administra serviciile Docker.
+## Docker daemon
+Docker daemon (dockerd) ascultă cererile API Docker și administrează obiectele Docker precum imagini, containere, rețele și volume. Un daemon poate, de asemenea, comunica cu alți daemons pentru a administra serviciile Docker.
 
 ## Clientul Docker
-Clientul Docker (docker) este modalitatea principală prin care mulți utilizatori Docker interacționează cu Docker. Atunci când utilizați comenzi precum `docker run`, clientul trimite aceste comenzi către dockerd, care le execută. Comanda `docker` utilizează API-ul Docker. Clientul Docker poate comunica cu mai mulți demoni.
+Clientul Docker (docker) este modalitatea principală prin care mulți utilizatori Docker interacționează cu Docker. Atunci când utilizați comenzi precum `docker run`, clientul trimite aceste comenzi către `dockerd`, care le execută. Comanda `docker` utilizează API-ul Docker. Clientul Docker poate comunica cu mai mulți daemons.
 
 ## Registre Docker
 Un registru Docker stochează imagini Docker. Docker Hub este un registru public pe care oricine îl poate utiliza, iar Docker caută imagini pe Docker Hub în mod implicit. Puteți chiar să rulați propriul registru privat.
