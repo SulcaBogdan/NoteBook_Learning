@@ -5,7 +5,7 @@
 
 Dacă scrii majoritatea DAG-urilor tale folosind cod Python simplu în loc de Operatori, atunci API-ul `TaskFlow` îți va face mult mai ușor să scrii DAG-uri curate fără boilerplate suplimentar, totul folosind decoratorul `@task`.
 
-`TaskFlow` se ocupă de mutarea intrărilor și ieșirilor între Task-urile tale folosind `XComs` pentru tine, precum și de calcularea automată a dependențelor - atunci când apelezi o funcție `TaskFlow` în fișierul tău DAG, în loc să o execute, vei primi un obiect care reprezintă `XCom`-ul pentru rezultat (un `XComArg`), pe care îl poți folosi apoi ca intrare pentru sarcinile sau operatorii downstream. De exemplu:
+`TaskFlow` se ocupă de mutarea `input` și `output` între Task-urile tale folosind `XComs` pentru tine, precum și de calcularea automată a dependențelor - atunci când apelezi o funcție `TaskFlow` în fișierul tău DAG, în loc să o execute, vei primi un obiect care reprezintă `XCom`-ul pentru rezultat (un `XComArg`), pe care îl poți folosi apoi ca intrare pentru task-uri sau operatorii downstream. De exemplu:
 
 ```python
 from airflow.decorators import task
@@ -32,13 +32,13 @@ EmailOperator(
 )
 ```
 
-Aici, există trei sarcini - `get_ip`, `compose_email` și `send_email`.
+Aici, există trei task-uri - `get_ip`, `compose_email` și `send_email`.
 
-Primele două sunt declarate folosind `TaskFlow` și trec automat valoarea returnată de `get_ip` în `compose_email`, nu numai legând `XCom`-ul între ele, ci declarând automat că `compose_email` este în aval de `get_ip`.
+Primele două sunt declarate folosind `TaskFlow` și trec automat valoarea returnată de `get_ip` în `compose_email`, nu numai legând `XCom`-ul între ele, ci declarând automat că `compose_email` este downstream de `get_ip`.
 
-`send_email` este un Operator mai tradițional, dar chiar și el poate folosi valoarea returnată de `compose_email` pentru a-și seta parametrii și din nou, deducând automat că trebuie să fie în aval de `compose_email`.
+`send_email` este un Operator mai tradițional, dar chiar și el poate folosi valoarea returnată de `compose_email` pentru a-și seta parametrii și din nou, deducând automat că trebuie să fie downstream de `compose_email`.
 
-De asemenea, poți folosi o valoare sau o variabilă simplă pentru a apela o funcție TaskFlow - de exemplu, asta va funcționa așa cum te aștepți (dar, desigur, nu va rula codul din interiorul sarcinii până când DAG-ul este executat - valoarea numelui este persistată ca un parametru de sarcină până în acel moment):
+De asemenea, poți folosi o valoare sau o variabilă simplă pentru a apela o funcție TaskFlow - de exemplu, asta va funcționa așa cum te aștepți (dar, desigur, nu va rula codul din interiorul task-ului până când DAG-ul este executat - valoarea numelui este persistată ca un parametru de task până în acel moment):
 
 ```python
 @task
@@ -65,7 +65,7 @@ def print_ti_info(task_instance: TaskInstance | None = None, dag_run: DagRun | N
     print(f"DAG Run queued at: {dag_run.queued_at}")  # 2023-08-10 00:00:01+02:20
 ```
 
-Sau, poți adăuga `**kwargs` la semnătura sarcinii tale și toate variabilele de context Airflow vor fi accesibile în dicționarul `kwargs`:
+Sau, poți adăuga `**kwargs` la semnătura task-ului tale și toate variabilele de context Airflow vor fi accesibile în dicționarul `kwargs`:
 
 ```python
 from airflow.models.taskinstance import TaskInstance
@@ -95,12 +95,12 @@ Fiecare linie de logging creată în acest fel va fi înregistrată în jurnalul
 
 ## Transmiterea de Obiecte Arbitrare ca Argumente
 
-Așa cum s-a menționat, `TaskFlow` folosește `XCom` pentru a transmite variabile la fiecare sarcină. Acest lucru necesită ca variabilele folosite ca argumente să poată fi serializate. Airflow suportă implicit toate tipurile încorporate (cum ar fi `int` sau `str`) și suportă obiecte care sunt decorate cu @`dataclass` sau `@attr.define`. Exemplul următor arată utilizarea unui set de date, care este decorat cu `@attr.define`, împreună cu `TaskFlow`.
+Așa cum s-a menționat, `TaskFlow` folosește `XCom` pentru a transmite variabile la fiecare task. Acest lucru necesită ca variabilele folosite ca argumente să poată fi serializate. Airflow suportă implicit toate tipurile încorporate (cum ar fi `int` sau `str`) și suportă obiecte care sunt decorate cu @`dataclass` sau `@attr.define`. Exemplul următor arată utilizarea unui set de date, care este decorat cu `@attr.define`, împreună cu `TaskFlow`.
 
 
 ### Nota
 
-Un beneficiu suplimentar al folosirii `Dataset` este că se înregistrează automat ca intrare în cazul în care este folosit ca argument de intrare. De asemenea, se înregistrează automat ca ieșire dacă valoarea returnată a sarcinii tale este un dataset sau o listă de `[Dataset]`.
+Un beneficiu suplimentar al folosirii `Dataset` este că se înregistrează automat ca intrare în cazul în care este folosit ca argument de intrare. De asemenea, se înregistrează automat ca ieșire dacă valoarea returnată a task-ului tale este un dataset sau o listă de `[Dataset]`.
 
 ```python
 import json
@@ -152,7 +152,7 @@ etl()
 
 ## Obiecte Personalizate
 
-S-ar putea să vrei să transmiți obiecte personalizate. În mod obișnuit, ai decora clasele tale cu `@dataclass` sau `@attr.define` și Airflow va descoperi ce trebuie să facă. În unele cazuri, ai putea dori să controlezi serializarea singur. Pentru a face acest lucru, adaugă metoda `serialize()` la clasa ta și metoda staticmethod deserialize(`data: dict`, `version: int`) la clasa ta. Astfel:
+S-ar putea să vrei să transmiți obiecte personalizate. În mod obișnuit, ai decora clasele tale cu `@dataclass` sau `@attr.define` și Airflow va descoperi ce trebuie să facă. În unele cazuri, ai putea dori să controlezi serializarea singur. Pentru a face acest lucru, adaugă metoda `serialize()` la clasa ta și metoda `staticmethod` deserialize(`data: dict`, `version: int`) la clasa ta. Astfel:
 
 
 ```python

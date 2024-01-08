@@ -65,7 +65,7 @@ Aici, `{{ ds }}` este o variabilă template, iar datorită faptului că parametr
 
 Poți utiliza templatingul `Jinja` cu fiecare parametru marcat ca "`templated`" în documentație. Substituția șabloanelor are loc chiar înainte ca funcția `pre_execute` a operatorului tău să fie apelată.
 
-Poți folosi, de asemenea, templatingul `Jinja` cu câmpuri `nested`, atât timp cât aceste câmpuri nested sunt marcate ca templated în structura din care fac parte: câmpurile înregistrate în proprietatea `template_fields` vor fi supuse substituției de șabloane, cum ar fi câmpul path în exemplul de mai jos:
+Poți folosi, de asemenea, templating-ul `Jinja` cu câmpuri `nested`, atât timp cât aceste câmpuri nested sunt marcate ca templated în structura din care fac parte: câmpurile înregistrate în proprietatea `template_fields` vor fi supuse substituției de șabloane, cum ar fi câmpul path în exemplul de mai jos:
 
 ```python
 class MyDataReader:

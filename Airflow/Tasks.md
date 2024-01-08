@@ -1,12 +1,12 @@
 # Tasks in AirFlow
 
 ## Tasks
-Un `Task` este unitatea de bază a execuției în Airflow. Sarcinile sunt aranjate în DAG-uri, iar apoi au dependențe `downstream` și `upstream` setate între ele pentru a exprima ordinea în care ar trebui să ruleze.
+Un `Task` este unitatea de bază a execuției în Airflow. task-urile sunt aranjate în DAG-uri, iar apoi au dependențe `downstream` și `upstream` setate între ele pentru a exprima ordinea în care ar trebui să ruleze.
 
 Există trei tipuri de bază de `Tasks`:
 
 - `Operators`
-Șabloane predefinite de sarcini pe care le puteți lega rapid pentru a construi cea mai mare parte a DAG-urilor dvs.
+Șabloane predefinite de task-uri pe care le puteți lega rapid pentru a construi cea mai mare parte a DAG-urilor dvs.
 
 -  `Sensors`
 O subclasă specială a `Operatorilor` care se ocupă în întregime de așteptarea unui eveniment extern să se întâmple.
@@ -17,11 +17,11 @@ O funcție personalizată Python împachetată ca o `Task`.
 Intern, acestea sunt de fapt toate subclase ale `BaseOperator` din Airflow, iar conceptele de `Task` și `Operator` sunt într-o oarecare măsură interschimbabile, dar este util să le considerăm ca concepte separate - în esență, `Operators` și `Sensors` sunt șabloane, iar când apelezi unul într-un fișier DAG, creezi un `Task`.
 
 ## Relații
-Partea cheie a utilizării `Tasks` constă în definirea modului în care sunt interconectate - dependențele lor sau, cum spunem în Airflow, sarcinile lor `upstream` și `downstream`. Tu declari mai întâi sarcinile și apoi declarile dependențele lor.
+Partea cheie a utilizării `Tasks` constă în definirea modului în care sunt interconectate - dependențele lor sau, cum spunem în Airflow, task-urile lor `upstream` și `downstream`. Tu declari mai întâi task-urile și apoi declarile dependențele lor.
 
 *Notă*
 
-Numim sarcina `upstream` pe cea care precede direct celelalte sarcini. În trecut, o numeam `Task-ul parinte`. Fii conștient că acest concept nu descrie sarcinile care sunt mai sus în ierarhia sarcinilor (adică nu sunt părinții direcți ai sarcinii). Aceeași definiție se aplică și la sarcina în aval, care trebuie să fie un copil direct al celeilalte sarcini.
+Numim task-ul `upstream` pe cea care precede direct celelalte task-uri. În trecut, o numeam `Task-ul parinte`. Fii conștient că acest concept nu descrie task-urile care sunt mai sus în ierarhia task-urilor (adică nu sunt părinții direcți ai task-ului). Aceeași definiție se aplică și la task-ul downstream, care trebuie să fie un copil direct al celeilalte task-uri.
 
 Există două moduri de a declara dependențe - folosind operatorii `>>` și `<<` (`bitshift`):
 
@@ -37,44 +37,44 @@ third_task.set_upstream(second_task)
 
 Ambele fac exact același lucru, dar în general vă recomandăm să utilizați `operatorii bitshift`, deoarece sunt mai ușor de citit în majoritatea cazurilor.
 
-În mod implicit, un `task` va fi executat atunci când toate sarcinile sale `upstream` (părinte) au avut succes, dar există multe modalități de modificare a acestui comportament pentru a adăuga ramificări, pentru a aștepta doar unele sarcini `upstream` sau pentru a schimba comportamentul în funcție de locul în care rulează curentul în istorie.
+În mod implicit, un `task` va fi executat atunci când toate task-urile sale `upstream` (părinte) au avut succes, dar există multe modalități de modificare a acestui comportament pentru a adăuga branching, pentru a aștepta doar unele task-uri `upstream` sau pentru a schimba comportamentul în funcție de locul în care rulează curentul în istorie.
 
-Task-urile nu transmit informații între ele în mod implicit și rulează în mod complet `independent`. Dacă doriți să transmiteți informații de la o sarcină la alta, ar trebui să utilizați XComs.
+Task-urile nu transmit informații între ele în mod implicit și rulează în mod complet `independent`. Dacă doriți să transmiteți informații de la o task la alta, ar trebui să utilizați XComs.
 
 
 ## Task Instances
 
-În același mod în care un DAG este instanțiat într-un DAG Run de fiecare dată când rulează, sarcinile dintr-un DAG sunt instanțiate în `Task Instances`.
+În același mod în care un DAG este instanțiat într-un DAG Run de fiecare dată când rulează, task-urile dintr-un DAG sunt instanțiate în `Task Instances`.
 
-O instanță a unui `Task` este o rulare specifică a acelei sarcini pentru un DAG dat (și, prin urmare, pentru un interval de date dat). Ele reprezintă, de asemenea, starea unei sarcini, indicând în ce etapă a ciclului de viață se află.
+O instanță a unui `Task` este o rulare specifică a acelei task-uri pentru un DAG dat (și, prin urmare, pentru un interval de date dat). Ele reprezintă, de asemenea, starea unei task-uri, indicând în ce etapă a ciclului de viață se află.
 
-Stările posibile pentru o instanță de sarcină sunt:
+Stările posibile pentru o instanță de task sunt:
 
-- `none`: Sarcina nu a fost încă planificată pentru execuție (dependențele sale nu au fost îndeplinite încă)
-- `scheduled`: Planificatorul a determinat că dependențele sarcinii sunt îndeplinite și că ar trebui să ruleze
-- `queued`: Sarcina a fost asignată unui Executor și așteaptă un worker
-- `running`: Sarcina rulează pe un worker (sau pe un executor local/sincron)
-- `success`: Sarcina s-a terminat fără erori
-- `restarting`: Sarcina a fost solicitată extern să fie restartată în timpul ruleazării
-- `failed`: Sarcina a avut o eroare în timpul execuției și nu a reușit să ruleze
-- `skipped`: Sarcina a fost omisă din cauza ramificării, LatestOnly sau a unor motive `similare`.
-- `upstream_failed`: O sarcină upstream a eșuat și Regula de Declanșare spune că aveam nevoie de ea
-- `up_for_retry`: Sarcina a eșuat, dar are încercări de reluare rămase și va fi reprogramată.
-- `up_for_reschedule`: Sarcina este un Senzor aflat în modul de reprogramare
-- `deferred`: Sarcina a fost amânată pentru o declanșare ulterioară
-- `removed`: Sarcina a dispărut din DAG de la începutul rulării
+- `none`: task-ul nu a fost încă planificată pentru execuție (dependențele sale nu au fost îndeplinite încă)
+- `scheduled`: Planificatorul a determinat că dependențele task-ului sunt îndeplinite și că ar trebui să ruleze
+- `queued`: task-ul a fost asignată unui Executor și așteaptă un worker
+- `running`: task-ul rulează pe un worker (sau pe un executor local/sincron)
+- `success`: task-ul s-a terminat fără erori
+- `restarting`: task-ul a fost solicitată extern să fie restartată în timpul ruleazării
+- `failed`: task-ul a avut o eroare în timpul execuției și nu a reușit să ruleze
+- `skipped`: task-ul a fost omisă din cauza ramificării, LatestOnly sau a unor motive `similare`.
+- `upstream_failed`: O task upstream a eșuat și Regula de Declanșare spune că aveam nevoie de ea
+- `up_for_retry`: task-ul a eșuat, dar are încercări de reluare rămase și va fi reprogramată.
+- `up_for_reschedule`: task-ul este un Senzor aflat în modul de reprogramare
+- `deferred`: task-ul a fost amânată pentru o declanșare ulterioară
+- `removed`: task-ul a dispărut din DAG de la începutul rulării
 
 ![task](https://airflow.apache.org/docs/apache-airflow/stable/_images/task_lifecycle_diagram.png)
 
 
-Ideal, o sarcină ar trebui să treacă de la starea "`none`", la "`scheduled`", apoi la "`queued`", "`running`" și în cele din urmă la "`success`".
+Ideal, o task ar trebui să treacă de la starea "`none`", la "`scheduled`", apoi la "`queued`", "`running`" și în cele din urmă la "`success`".
 
-Atunci când rulează orice `Task` personalizat (`Operator`), acesta va primi o copie a instanței sarcinii; în plus față de capacitatea de a inspecta metadatele sarcinii, conține și metode pentru lucruri precum `XComs`.
+Atunci când rulează orice `Task` personalizat (`Operator`), acesta va primi o copie a instanței task-ului; în plus față de capacitatea de a inspecta metadatele task-ului, conține și metode pentru lucruri precum `XComs`.
 
 ### Terminologiea relațiilor
-Pentru orice instanță de sarcină dată, există două tipuri de relații pe care le are cu alte instanțe.
+Pentru orice instanță de task dată, există două tipuri de relații pe care le are cu alte instanțe.
 
-În primul rând, poate avea sarcini `upstream` și `downstream`:
+În primul rând, poate avea task-uri `upstream` și `downstream`:
 
 ```python
 task1 >> task2 >> task3
@@ -86,7 +86,7 @@ Pot exista, de asemenea, instanțe ale aceleiași task, dar pentru intervale de 
 
 ## Timeout-uri
 
-Dacă dorești ca o sarcină să aibă un timp maxim de execuție, setează atributul `execution_timeout` la o valoare `datetime.timedelta` care reprezintă durata maximă permisă. Aceasta se aplică tuturor sarcinilor Airflow, inclusiv senzorilor. `execution_timeout` controlează timpul maxim permis pentru fiecare execuție. Dacă `execution_timeout` este depășit, sarcina expiră și se generează `AirflowTaskTimeout`.
+Dacă dorești ca o task să aibă un timp maxim de execuție, setează atributul `execution_timeout` la o valoare `datetime.timedelta` care reprezintă durata maximă permisă. Aceasta se aplică tuturor task-urilor Airflow, inclusiv senzorilor. `execution_timeout` controlează timpul maxim permis pentru fiecare execuție. Dacă `execution_timeout` este depășit, task-ul expiră și se generează `AirflowTaskTimeout`.
 
 În plus, senzorii au un parametru de `timeout`. Acest lucru contează doar pentru senzorii în modul de reprogramare. `timeout` controlează timpul maxim permis pentru ca senzorul să reușească. Dacă `timeout` este depășit, se va genera `AirflowSensorTimeout` și senzorul va eșua imediat, fără a încerca din nou.
 
@@ -113,11 +113,11 @@ sensor = SFTPSensor(
 
 ## SLA-uri
 
-Un `SLA`, sau un **Service Level Agreement**, reprezintă așteptarea pentru timpul maxim în care o sarcină ar trebui să fie finalizată în raport cu ora de începere a `Dag Run`. Dacă o sarcină durează mai mult decât acest timp, ea devine vizibilă în partea "SLA Misses" a interfeței utilizatorului, și, de asemenea, se trimite printr-un email cu toate sarcinile care au depășit SLA-ul lor.
+Un `SLA`, sau un **Service Level Agreement**, reprezintă așteptarea pentru timpul maxim în care o task ar trebui să fie finalizată în raport cu ora de începere a `Dag Run`. Dacă o task durează mai mult decât acest timp, ea devine vizibilă în partea "SLA Misses" a interfeței utilizatorului, și, de asemenea, se trimite printr-un email cu toate task-urile care au depășit SLA-ul lor.
 
-Sarcinile care depășesc SLA-ul nu sunt anulate, totuși - li se permite să ruleze până la finalizare. Dacă dorești să anulezi o sarcină după ce a atins o anumită durată de execuție, atunci ar trebui să folosești `Timeout`-uri în schimb.
+task-urile care depășesc SLA-ul nu sunt anulate, totuși - li se permite să ruleze până la finalizare. Dacă dorești să anulezi o task după ce a atins o anumită durată de execuție, atunci ar trebui să folosești `Timeout`-uri în schimb.
 
-Pentru a seta un SLA pentru o sarcină, transmite un obiect `datetime.timedelta` parametrului sla al `Task/Operator`. Poți, de asemenea, furniza un `sla_miss_callback` care va fi apelat atunci când SLA este depășit, dacă dorești să rulezi logica ta personalizată.
+Pentru a seta un SLA pentru o task, transmite un obiect `datetime.timedelta` parametrului sla al `Task/Operator`. Poți, de asemenea, furniza un `sla_miss_callback` care va fi apelat atunci când SLA este depășit, dacă dorești să rulezi logica ta personalizată.
 
 Dacă dorești să dezactivezi complet verificarea `SLA`, poți seta `check_slas = False` în configurarea `[core]` a Airflow.
 
@@ -127,23 +127,23 @@ Poți, de asemenea, furniza un `sla_miss_callback` care va fi apelat atunci cân
 
 - `dag`
 
-  Obiectul DAG părinte pentru DAGRun în care sarcinile au depășit SLA-ul lor.
+  Obiectul DAG părinte pentru DAGRun în care task-urile au depășit SLA-ul lor.
 
 - `task_list`
 
-  Listă de șiruri (separate de linii noi, \n) ale tuturor sarcinilor care au depășit SLA-ul lor de la ultima rulare a `sla_miss_callback`.
+  Listă de șiruri (separate de linii noi, \n) ale tuturor task-urilor care au depășit SLA-ul lor de la ultima rulare a `sla_miss_callback`.
 
 - `blocking_task_list`
 
-  Orice sarcină în DAGRun(s) (cu aceeași data de execuție ca o sarcină care a depășit SLA-ul) care nu este într-o stare SUCCESS în momentul în care sla_miss_callback rulează, adică '`running`', '`failed`'. Aceste sarcini sunt descrise ca sarcini care blochează propria lor finalizare sau a altei sarcini înainte ca fereastra lor SLA să fie completă.
+  Orice task în DAGRun(s) (cu aceeași data de execuție ca o task care a depășit SLA-ul) care nu este într-o stare SUCCESS în momentul în care sla_miss_callback rulează, adică '`running`', '`failed`'. Aceste task-uri sunt descrise ca task-uri care blochează propria lor finalizare sau a altei task-uri înainte ca fereastra lor SLA să fie completă.
 
 - `slas`
 
-  Listă de obiecte SlaMiss asociate sarcinilor din parametrul `task_list`.
+  Listă de obiecte SlaMiss asociate task-urilor din parametrul `task_list`.
 
 - `blocking_tis`
 
-  Listă de obiecte TaskInstance asociate sarcinilor din parametrul `blocking_task_list`.
+  Listă de obiecte TaskInstance asociate task-urilor din parametrul `blocking_task_list`.
 
 Exemple de semnătură a funcției `sla_miss_callback`:
 
@@ -198,23 +198,23 @@ example_dag = example_sla_dag()
 ```
 ### Excepții speciale
 
-Dacă dorești să controlezi starea sarcinii tale din interiorul codului personalizat al `Task/Operator`, Airflow oferă două excepții speciale pe care le poți ridica:
+Dacă dorești să controlezi starea task-ului tale din interiorul codului personalizat al `Task/Operator`, Airflow oferă două excepții speciale pe care le poți ridica:
 
-- `AirflowSkipException` va marca sarcina curentă ca fiind omisă.
+- `AirflowSkipException` va marca task-ul curent ca fiind omisă.
   
-- `AirflowFailException` va marca sarcina curentă ca fiind eșuată, ignorând orice încercare de reluare rămasă.
+- `AirflowFailException` va marca task-ul curent ca fiind eșuată, ignorând orice încercare de reluare rămasă.
 
 Acestea pot fi utile dacă codul tău are cunoștințe suplimentare despre mediul său și dorește să eșueze/omoare mai repede - de exemplu, să ocolească atunci când știe că nu există date disponibile sau să eșueze rapid atunci când detectează că cheia API este invalidă (deoarece aceasta nu va fi rezolvată printr-o reluare).
 
 ## Zombie/Undead Tasks
 
-Niciun sistem nu rulează perfect, iar instanțele de sarcină sunt de așteptat să se oprească din când în când. Airflow detectează două tipuri de neconcordanțe între sarcini/procese:
+Niciun sistem nu rulează perfect, iar instanțele de task sunt de așteptat să se oprească din când în când. Airflow detectează două tipuri de neconcordanțe între task-uri/procese:
 
-- `Zombie tasks` sunt instanțe de sarcină blocate într-o stare de execuție, în ciuda faptului că job-urile asociate sunt inactive (de exemplu, procesul lor nu a trimis un semnal recent de viață deoarece a fost oprit sau mașina a picat). Airflow le va găsi periodic, le va curăța și va eșua sau va încerca să repornească sarcina în funcție de setările sale.
+- `Zombie tasks` sunt instanțe de task blocate într-o stare de execuție, în ciuda faptului că job-urile asociate sunt inactive (de exemplu, procesul lor nu a trimis un semnal recent de viață deoarece a fost oprit sau mașina a picat). Airflow le va găsi periodic, le va curăța și va eșua sau va încerca să repornească task-ul în funcție de setările sale.
 
-- `Undead tasks` sunt sarcini care nu ar trebui să ruleze, dar o fac, adesea cauzate atunci când editezi manual instanțe de sarcină prin interfața utilizatorului. Airflow le va găsi periodic și le va încheia.
+- `Undead tasks` sunt task-uri care nu ar trebui să ruleze, dar o fac, adesea cauzate atunci când editezi manual instanțe de task prin interfața utilizatorului. Airflow le va găsi periodic și le va încheia.
 
-Mai jos este un fragment de cod din planificatorul Airflow care rulează periodic pentru a detecta sarcini `zombie/undead`.
+Mai jos este un fragment de cod din planificatorul Airflow care rulează periodic pentru a detecta task-uri `zombie/undead`.
 
 ```python
     def _find_zombies(self) -> None:
@@ -270,25 +270,25 @@ Mai jos este un fragment de cod din planificatorul Airflow care rulează periodi
             Stats.incr("zombies_killed", tags={"dag_id": ti.dag_id, "task_id": ti.task_id})
 ```
 
-Explicația criteriilor folosite în fragmentul de mai sus pentru detectarea sarcinilor `zombie` este următoarea:
+Explicația criteriilor folosite în fragmentul de mai sus pentru detectarea task-urilor `zombie` este următoarea:
 
 1. `Task Instance State`
 
-Numai instanțele de sarcină în starea `RUNNING` sunt considerate potențiale `zombie`.
+Numai instanțele de task în starea `RUNNING` sunt considerate potențiale `zombie`.
 
 2. `Job State and Heartbeat Check`
 
-Task-urile `zombie` sunt identificate dacă job-ul asociat nu se află în starea `RUNNING` sau dacă ultimul semnal de viață al job-ului este anterior pragului de timp calculat (`limit_dttm`). `Heartbeat`-ul este un mecanism pentru a indica faptul că o sarcină sau un job este încă activ și în execuție.
+Task-urile `zombie` sunt identificate dacă job-ul asociat nu se află în starea `RUNNING` sau dacă ultimul semnal de viață al job-ului este anterior pragului de timp calculat (`limit_dttm`). `Heartbeat`-ul este un mecanism pentru a indica faptul că o task sau un job este încă activ și în execuție.
 
 3. `Job Type`
 
-Job-ul asociat sarcinii trebuie să fie de tip "`LocalTaskJob`."
+Job-ul asociat task-ului trebuie să fie de tip "`LocalTaskJob`."
 
 4. `Queued by Job ID`
 
-Numai sarcinile puse în coadă de același job care este procesat în prezent sunt luate în considerare.
+Numai task-urile puse în coadă de același job care este procesat în prezent sunt luate în considerare.
 
-Aceste condiții ajută colectiv la identificarea sarcinilor în execuție care pot fi `zombie` în funcție de starea lor, starea job-ului asociat, statusul `heartbeat`-ului, tipul job-ului și job-ul specific care le-a pus în coadă. Dacă o sarcină îndeplinește aceste criterii, este considerată o potențială `zombie`, și se iau măsuri ulterioare, cum ar fi înregistrarea și trimiterea unei solicitări de callback.
+Aceste condiții ajută colectiv la identificarea task-urilor în execuție care pot fi `zombie` în funcție de starea lor, starea job-ului asociat, statusul `heartbeat`-ului, tipul job-ului și job-ul specific care le-a pus în coadă. Dacă o task îndeplinește aceste criterii, este considerată o potențială `zombie`, și se iau măsuri ulterioare, cum ar fi înregistrarea și trimiterea unei solicitări de callback.
 
 ### Reproducerea locală a Task-urilor zombie
 Dacă doriți să reproduceți task-uri zombi pentru procesele de dezvoltare/testare, urmați pașii de mai jos:
@@ -323,9 +323,9 @@ sleep_dag()
 Rulați DAG-ul de mai sus și așteptați puțin. Ar trebui să vedeți că instanța task-ului devine un task zombi și apoi este killed de programator.
 
 ### Configurarea executor
-Unii Executori permit configurarea opțională per task - cum ar fi `KubernetesExecutor`, care vă permite să setați o imagine pe care să rulați sarcina.
+Unii Executori permit configurarea opțională per task - cum ar fi `KubernetesExecutor`, care vă permite să setați o imagine pe care să rulați task-ul.
 
-Acest lucru se realizează prin argumentul `executor_config` către o sarcină sau un `operator`. Iată un exemplu de setare a imaginii `Docker` pentru o sarcină care va rula pe `KubernetesExecutor`:
+Acest lucru se realizează prin argumentul `executor_config` către o task sau un `operator`. Iată un exemplu de setare a imaginii `Docker` pentru o task care va rula pe `KubernetesExecutor`:
 
 ```python
 MyOperator(...,

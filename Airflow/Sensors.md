@@ -2,7 +2,7 @@
 
 ## Senzori
 
-Senzorii sunt un tip special de Operatori proiectați să facă exact o singură lucrare - să aștepte ca ceva să se întâmple. Poate fi bazat pe timp, să aștepte un fișier sau un eveniment extern, dar tot ceea ce fac este să aștepte până când ceva se întâmplă, și apoi să reușească astfel încât sarcinile lor downstream să poată rula.
+Senzorii sunt un tip special de Operatori proiectați să facă exact o singură lucrare - să aștepte ca ceva să se întâmple. Poate fi bazat pe timp, să aștepte un fișier sau un eveniment extern, dar tot ceea ce fac este să aștepte până când ceva se întâmplă, și apoi să reușească astfel încât task-urile lor `downstream` să poată rula.
 
 Deoarece sunt în principal inactivi, Senzorii au două moduri diferite de execuție pentru a fi mai eficienți în utilizarea lor:
 
