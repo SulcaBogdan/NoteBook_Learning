@@ -34,7 +34,7 @@ public class Task {
         Pipeline pipeline = Pipeline.create(options);
 
         // Create input PCollection
-        PCollection<String> input = pipeline.apply(TextIO.read().from("gs://apache-beam-samples/nyc_taxi/misc/sample1000.csv"));
+        PCollection<String> input = pipeline.apply(TextIO.read().from("SulcaBogdan/NoteBook_Learning/ApacheBeam/Common.Transforms/Challenge/sample1000.csv"));
 
         // Extract cost from PCollection
         PCollection<Double> rideTotalAmounts = input.apply(ParDo.of(new ExtractTaxiRideCostFn()));
@@ -77,7 +77,7 @@ public class Task {
         return input.apply(WithKeys.of(number -> key)).setCoder(KvCoder.of(StringUtf8Coder.of(),DoubleCoder.of()));
     }
 
-     static class ExtractTaxiRideCostFn extends DoFn<String, Double> {
+    static class ExtractTaxiRideCostFn extends DoFn<String, Double> {
         @ProcessElement
         public void processElement(ProcessContext c) {
             String[] items = c.element().split(",");
