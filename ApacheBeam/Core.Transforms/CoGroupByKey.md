@@ -233,7 +233,6 @@ public class Task {
                     ", country='" + country + '\'' +
                     '}';
         }
-
     }
     static class LogOutput<T> extends DoFn<T, T> {
         private String prefix;

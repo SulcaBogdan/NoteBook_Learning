@@ -31,6 +31,7 @@ public class Task {
     public static void main(String[] args) {
         PipelineOptions options = PipelineOptionsFactory.fromArgs(args).create();
         Pipeline pipeline = Pipeline.create(options);
+        
         // List of elements
         PCollection<String> input =
                 pipeline.apply(Create.of("Apache Beam", "Unified Batch and Streaming"));
@@ -60,7 +61,7 @@ public class Task {
         LogOutput(String prefix) {
             this.prefix = prefix;
         }
-        
+
         @ProcessElement
         public void processElement(ProcessContext c) throws Exception {
             LOG.info(prefix + ": {}", c.element());
