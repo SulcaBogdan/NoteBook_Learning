@@ -78,3 +78,31 @@ Pentru a face datele tale tolerante la erori și disponibile în mod constant, f
 4. **Kafka Streams API** pentru a implementa aplicații și microservicii de procesare a fluxurilor. Oferă funcții de nivel superior pentru procesarea fluxurilor de evenimente, inclusiv transformări, operațiuni stătice precum agregările și îmbinările, windowing, procesare bazată pe timestamp-ul evenimentelor și altele. Datele de intrare sunt citite din una sau mai multe topic-uri pentru a genera date de ieșire către una sau mai multe topic-uri, transformând efectiv fluxurile de intrare în fluxuri de ieșire.
 5. **Kafka Connect API** pentru a construi și rula conectori reutilizabili pentru import/export de date care consumă (citesc) sau produc (scriu) fluxuri de evenimente de și către sisteme și aplicații externe, astfel încât să se integreze cu Kafka. De exemplu, un conector către o bază de date relațională precum **PostgreSQL** ar putea captura fiecare schimbare într-un set de tabele. Cu toate acestea, în practică, de obicei nu este necesar să implementezi proprii conectori deoarece comunitatea Kafka furnizează deja sute de conectori gata de utilizare.
 
+### Cazuri de Utilizare
+
+Iată o descriere a câtorva cazuri populare de utilizare pentru Apache Kafka®.
+
+#### **Mesagerie**
+Kafka funcționează bine ca înlocuitor pentru un broker de mesaje mai tradițional. Brokerii de mesaje sunt utilizați din diverse motive (pentru a separa procesarea de producătorii de date, pentru a tampona mesajele neprocesate, etc). În comparație cu majoritatea sistemelor de mesagerie, Kafka oferă un debit mai bun, partajare încorporată, replicare și toleranță la erori, ceea ce îl face o soluție bună pentru aplicații de procesare a mesajelor la scară mare.
+În experiența noastră, utilizările de mesagerie au adesea un debit comparativ redus, dar pot necesita o latenta redusă de la un capăt la altul și depind adesea de garanțiile de durabilitate puternice oferite de Kafka.
+
+În acest domeniu, Kafka este comparabil cu sisteme de mesagerie tradiționale precum ActiveMQ sau RabbitMQ.
+
+#### **Urmărirea Activității pe Website**
+Cazul inițial de utilizare pentru Kafka a fost reconstruirea unui sistem de urmărire a activității utilizatorilor sub forma unui set de fluxuri de publicare-abonare în timp real. Acest lucru înseamnă că activitatea pe site (vizualizări de pagini, căutări sau alte acțiuni pe care utilizatorii le pot întreprinde) este publicată în topicuri centrale, cu un topic pentru fiecare tip de activitate. Aceste fluxuri sunt disponibile pentru abonare pentru o serie de cazuri de utilizare, inclusiv procesare în timp real, monitorizare în timp real și încărcare în Hadoop sau sisteme de stocare offline pentru procesare și raportare offline.
+Urmărirea activității este adesea de volum mare, deoarece multe mesaje de activitate sunt generate pentru fiecare vizualizare de pagină a utilizatorului.
+
+#### **Metrici**
+Kafka este adesea folosit pentru datele operaționale de monitorizare. Acest lucru implică agregarea statisticilor din aplicații distribuite pentru a produce fluxuri centralizate de date operaționale.
+
+#### **Log Aggregation**
+Mulți oameni folosesc Kafka ca înlocuitor pentru o soluție de agregare a log-urilor. Agregarea log-urilor colectează în mod tipic fișierele de log-uri fizice de pe servere și le plasează într-un loc central (un server de fișiere sau, eventual, HDFS) pentru procesare. Kafka ascunde detaliile fișierelor și oferă o abstractizare mai curată a datelor de jurnal sau evenimentelor ca un flux de mesaje. Acest lucru permite procesarea cu latență mai mică și suport mai facil pentru surse multiple de date și consum de date distribuit. În comparație cu sistemele axate pe log-uri precum Scribe sau Flume, Kafka oferă performanțe la fel de bune, garanții de durabilitate mai puternice datorită replicării și o latență mult mai mică de la un capăt la altul.
+
+#### **Stream processing**
+Mulți utilizatori de Kafka procesează date în pipeline-uri de procesare alcătuite din mai multe etape, unde datele brute de intrare sunt consumate din topicuri Kafka și apoi agregate, îmbogățite sau altfel transformate în noi topicuri pentru consum sau procesare ulterioară. De exemplu, un pipeline de procesare pentru recomandarea de articole de știri ar putea analiza conținutul articolelor din fluxuri RSS și îl publica într-un topic "articole"; o procesare ulterioară ar putea normaliza sau deduplica acest conținut și publica conținutul articolelor curățat într-un nou topic; o etapă finală de procesare ar putea încerca să recomande acest conținut utilizatorilor. Astfel de pipeline-uri de procesare creează grafuri de fluxuri de date în timp real bazate pe topicurile individuale. Începând cu versiunea 0.10.0.0, este disponibilă în Apache Kafka o bibliotecă de procesare ușoară, dar puternică, numită Kafka Streams, pentru a efectua astfel de procesări de date așa cum sunt descrise mai sus. În afara Kafka Streams, alternativele pentru instrumente de procesare a fluxurilor de sursă deschisă includ Apache Storm și Apache Samza.
+
+#### **Event Sourcing**
+Event Sourcing este un stil de proiectare a aplicației în care schimbările de stare sunt înregistrate sub forma unei secvențe ordonate în timp a înregistrărilor. Suportul lui Kafka pentru date de jurnal foarte mari îl face un backend excelent pentru o aplicație construită în acest stil.
+
+#### **Commit Log**
+Kafka poate servi ca un fel de Commit Log extern pentru un sistem distribuit. Jurnalul ajută la replicarea datelor între noduri și acționează ca un mecanism de resincronizare pentru nodurile care au eșuat pentru a-și restabili datele. Funcția de compactare a log-urilor în Kafka ajută la susținerea acestui scop. În această utilizare, Kafka este similar cu proiectul Apache BookKeeper.
