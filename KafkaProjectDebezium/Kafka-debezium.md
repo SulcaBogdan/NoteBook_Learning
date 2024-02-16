@@ -12,7 +12,7 @@
 
 ## Pasii proiectului
 
-1. Configurarea kafka
+1. Configuratia kafka
 - In `server.properties` am modificat doar `log.dirs`
   
 ```properties
@@ -1309,10 +1309,15 @@ Daca nu este activ il pornim folosind
 ```bash
 sudo service postgresql start
 ```
+6. Acum vom crea o alta baza de date. In cazul meu am creat o alta baza de date pe acelasi user `postgres`. Am numit baza de date `postgres_jdbc`. In momentul porducerii de mesaje sink connector va consuma datele din kafka si le va deserializa in noua noastra baza de date.
+7. Pornim conectorii
+```bash
+connect-standalone.sh /bin/kafka/config/connect-standalone.properties /bin/kafka/connectors/debezium-connector-postgres/debezium-connect.properties /bin/kafka/connector/debezium-jdbc-postgres/debezium-jdbc.properties
+```
 
-6. Facem CRUD operations pe baza de date ca sa verificam daca totul merge, ne uitam pe logs pentru a vedea cum se comporta comenzile sau pe un consumator. In felul acesta am verifica source conectorul.
-7. Acum vom crea o alta baza de date. In cazul meu am creat o alta baza de date pe acelasi user `postgres`. Am numit baza de date `postgres_jdbc`. In momentul porducerii de mesaje sink connector va consuma datele din kafka si le va deserializa in noua noastra baza de date.
-8. Verificam daca s-a creat topica `source` conector si grupul de consumatori a `sink`. 
+8. Daca totul a pornit cu succes umreaza sa facem CRUD operations pe baza de date ca sa verificam daca totul merge, ne uitam pe logs pentru a vedea cum se comporta comenzile sau pe un consumator. In felul acesta am verifica source conectorul.
+   
+9.  Verificam daca s-a creat topica `source` conector si grupul de consumatori a `sink`. 
 ```bash
 kafka-topics.sh --bootstrap-server localhost:9092 --list
 ```
