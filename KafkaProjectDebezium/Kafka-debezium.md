@@ -1,10 +1,14 @@
 # Kafka debezium guide
 
 ## Versiuni folosite
-Kafka -> 3.6.1
-postgres -> 16.2
-debezium-source-connect-postgresql-> 2.5.1.final
-debezium-sink-connect-postgresql-> 2.5.1.final
+- `Kafka` -> 3.6.1
+
+- `postgresql` -> 16.2
+
+- `debezium-source-connect-postgresql`-> 2.5.1.final
+
+- `debezium-sink-connect-postgresql`-> 2.5.1.final
+
 
 ## Pasii proiectului
 
