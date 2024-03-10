@@ -1,0 +1,1 @@
+# Aici voi explica tot proiectul meu pentru kafka
